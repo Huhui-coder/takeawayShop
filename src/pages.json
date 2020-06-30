@@ -3,17 +3,60 @@
         {
             "path": "pages/index/index",
             "style": {
-                "usingComponents": {
-                    "van-button": "/wxcomponents/vant/dist/button/index"
-                },
-                "navigationBarTitleText": "uni-app"
+                "navigationBarTitleText": "下单助手"
+            }
+        },
+        {
+            "path": "pages/orderConfirm/index",
+            "style": {
+                "navigationBarTitleText": "订单确认"
+            }
+        },
+        {
+            "path": "pages/orderConfirm/remakeEdit",
+            "style": {
+                "navigationBarTitleText": "备注编辑"
+            }
+        },
+        {
+            "path": "pages/orderConfirm/addressList",
+            "style": {
+                "navigationBarTitleText": "我的地址"
+            }
+        },
+        {
+            "path": "pages/orderConfirm/addressEdit",
+            "style": {
+                "navigationBarTitleText": "地址编辑"
             }
         }
     ],
     "globalStyle": {
-        "navigationBarTextStyle": "black",
-        "navigationBarTitleText": "uni-app",
-        "navigationBarBackgroundColor": "#F8F8F8",
-        "backgroundColor": "#F8F8F8"
+        "navigationBarTextStyle": "#fffcfb",
+        "navigationBarTitleText": "下单助手",
+        "navigationBarBackgroundColor": "#FF6600",
+        "backgroundColor": "#fff",
+        "usingComponents": {
+            "van-button": "/wxcomponents/vant/dist/button/index",
+            "van-tab": "/wxcomponents/vant/dist/tab/index",
+            "van-tabs": "/wxcomponents/vant/dist/tabs/index",
+            "van-tree-select": "/wxcomponents/vant/dist/tree-select/index",
+            "van-stepper": "/wxcomponents/vant/dist/stepper/index",
+            "van-checkbox": "/wxcomponents/vant/dist/checkbox/index",
+            "van-checkbox-group": "/wxcomponents/vant/dist/checkbox-group/index",
+            "van-submit-bar": "/wxcomponents/vant/dist/submit-bar/index",
+            "van-tag": "/wxcomponents/vant/dist/tag/index",
+            "van-cell": "/wxcomponents/vant/dist/cell/index",
+            "van-cell-group": "/wxcomponents/vant/dist/cell-group/index",
+            "van-divider": "/wxcomponents/vant/dist/divider/index",
+            "van-icon": "/wxcomponents/vant/dist/icon/index",
+            "van-nav-bar": "/wxcomponents/vant/dist/nav-bar/index",
+            "van-radio": "/wxcomponents/vant/dist/radio/index",
+            "van-radio-group": "/wxcomponents/vant/dist/radio-group/index",
+            "van-field": "/wxcomponents/vant/dist/field/index",
+            "van-popup": "/wxcomponents/vant/dist/popup/index",
+            "van-area": "/wxcomponents/vant/dist/area/index",
+            "van-toast": "/wxcomponents/vant/dist/toast/index"
+        }
     }
 }

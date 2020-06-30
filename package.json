@@ -35,8 +35,11 @@
         "@dcloudio/uni-mp-toutiao": "^2.0.0-26120200226001",
         "@dcloudio/uni-mp-weixin": "^2.0.0-26120200226001",
         "@dcloudio/uni-stat": "^2.0.0-26120200226001",
+        "dayjs": "^1.8.28",
         "flyio": "^0.6.2",
+        "node-sass": "^4.14.1",
         "regenerator-runtime": "^0.12.1",
+        "sass-loader": "^8.0.2",
         "vue": "^2.6.11",
         "vuex": "^3.0.1"
     },
