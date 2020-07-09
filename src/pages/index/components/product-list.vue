@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 export default {
   props: {
     items: {
@@ -53,12 +53,12 @@ export default {
   mounted() {
     this.init();
   },
-  computed:{
-     ...mapState({
-      isAllSelect: state => state.isAllSelect,
-      total: state => state.total,
-      product: state => state.product,
-    })
+  computed: {
+    ...mapState({
+      isAllSelect: (state) => state.isAllSelect,
+      total: (state) => state.total,
+      product: (state) => state.product,
+    }),
   },
   watch: {
     productList: {
@@ -66,33 +66,32 @@ export default {
         // 找到已选择的商品,计算它的价格，然后 累计
         let product = value;
         let total = 0;
-        let chooseProduct = []
+        let chooseProduct = [];
         for (let item of product) {
           if (item.checked) {
-            chooseProduct.push(item)
+            chooseProduct.push(item);
             total += item.num * item.price;
           }
-          this.setProduct(chooseProduct)
-          this.setTotal(total)
+          this.setProduct(chooseProduct);
+          this.setTotal(total);
         }
-        console.log(this.product)
+        console.log(this.product);
       },
       deep: true,
       immediate: true,
     },
+    items: {
+      handler(value) {
+        this.productList = value;
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   methods: {
-    ...mapActions([
-      'setTotal',
-      'setProduct'
-    ]),
+    ...mapActions(["setTotal", "setProduct"]),
     init() {
-      let data = [];
-      const { items } = this;
-      items.map(function(value) {
-        data = data.concat(value.children);
-      });
-      this.productList = data;
+      this.productList = this.items;
     },
     fetch() {
       console.log(1);

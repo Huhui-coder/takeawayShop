@@ -9,15 +9,20 @@
         @click-nav="onClickNav"
         @click-item="onClickItem"
       >
-        <productList slot="content" :items="items" ref="productList" />
+        <productList slot="content" :items="currentItems" ref="productList" />
       </van-tree-select>
     </div>
     <div class="footer">
-      <van-submit-bar :price="total" button-text="提交订单" @submit="onSubmit" custom-class="van-submit-bar">
+      <van-submit-bar
+        :price="total"
+        button-text="提交订单"
+        @submit="onSubmit"
+        custom-class="van-submit-bar"
+      >
         <view
-          ><van-checkbox :value="isAllSelect" @change="onAllSelect"
-            >{{ isAllSelect ? '全不选':'全选'}}</van-checkbox
-          ></view
+          ><van-checkbox :value="isAllSelect" @change="onAllSelect">{{
+            isAllSelect ? "全不选" : "全选"
+          }}</van-checkbox></view
         >
       </van-submit-bar>
     </div>
@@ -26,13 +31,14 @@
 
 <script>
 import productList from "./product-list";
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from "vuex";
 
 export default {
   components: { productList },
   data() {
     return {
       mainActiveIndex: 0,
+      currentItems: [],
       items: [
         {
           text: "日结",
@@ -96,7 +102,7 @@ export default {
               checked: false,
               num: 1,
             },
-             {
+            {
               url: "https://img.yzcdn.cn/vant/apple-1.jpg",
               name: "小吃3",
               price: 22,
@@ -137,41 +143,47 @@ export default {
       ],
     };
   },
-  computed:{
-     ...mapState({
-      isAllSelect: state => state.isAllSelect,
-      total: state => state.total,  // 基本单位是分，转化为元
-      product: state => state.product,
-    })
+  computed: {
+    ...mapState({
+      isAllSelect: (state) => state.isAllSelect,
+      total: (state) => state.total, // 基本单位是分，转化为元
+      product: (state) => state.product,
+    }),
   },
-  mounted() {},
+  mounted() {
+    this.init()
+  },
   methods: {
-     ...mapActions([
-      'setIsAllSelect'
-    ]),
+    ...mapActions(["setIsAllSelect"]),
+    init() {
+      this.currentItems = this.items[0].children;
+    },
+    // 当点击右侧分类导航时，选择对应的商品进行展示
     onClickNav({ detail = {} }) {
       let index = detail.index;
       let { items } = this;
-      let id = items[index].children[0].id;
+      this.currentItems = this.items[index].children;
     },
 
     onClickItem({ detail = {} }) {
       console.log(detail);
     },
     onAllSelect(value) {
-      this.setIsAllSelect(value.detail)
-      if( this.isAllSelect ) { 
-        this.$refs.productList.productList.map((item) => item.checked = true)
+      this.setIsAllSelect(value.detail);
+      if (this.isAllSelect) {
+        this.$refs.productList.productList.map((item) => (item.checked = true));
       } else {
-        this.$refs.productList.productList.map((item) => item.checked = false)
+        this.$refs.productList.productList.map(
+          (item) => (item.checked = false)
+        );
       }
       console.log(value);
     },
-    onSubmit(){
+    onSubmit() {
       uni.navigateTo({
-        url: '/pages/orderConfirm/index'
-    });
-    }
+        url: "/pages/orderConfirm/index",
+      });
+    },
   },
 };
 </script>
@@ -181,14 +193,14 @@ export default {
   .main {
   }
   .footer {
-    .van-submit-bar{
+    .van-submit-bar {
       padding-top: 50upx;
     }
   }
 }
-.main-item{
+.main-item {
   min-height: calc(100vh + 50upx);
-  .van-tree-select{
+  .van-tree-select {
     min-height: calc(100vh + 50upx) !important;
   }
 }

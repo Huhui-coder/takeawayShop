@@ -36,11 +36,20 @@ export default {
   data() {
     return {};
   },
+  mounted(){
+    this.login()
+  },
   onLoad() {},
   methods: {
     login() {
-      login(params, captChaCookie).then((res) => {
-        console.log(res);
+      // login(params, captChaCookie).then((res) => {
+      //   console.log(res);
+      // });
+      uni.login({
+        provider: "weixin",
+        success: function(loginRes) {
+          console.log(loginRes);
+        },
       });
     },
   },
