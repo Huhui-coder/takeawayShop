@@ -26,7 +26,7 @@
             {{ formatTime(item.create_time) }}
           </div>
           <div class="info">
-            共7件商品 合计
+            共{{item.product.length}}件商品 合计
             <span class="money"> ￥{{ item.total / 100 }} </span>
           </div>
         </div>
