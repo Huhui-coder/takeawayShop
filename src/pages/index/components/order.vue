@@ -5,7 +5,7 @@
         class="main-item"
         :main-active-index="mainActiveIndex"
         :items="items"
-        height="80vh"
+        height="77vh"
         @click-nav="onClickNav"
         @click-item="onClickItem"
       >
@@ -16,16 +16,38 @@
       <van-submit-bar
         :price="total"
         button-text="提交订单"
+        :disabled="total === 0"
         @submit="onSubmit"
         custom-class="van-submit-bar"
       >
-        <view
-          ><van-checkbox :value="isAllSelect" @change="onAllSelect">{{
-            isAllSelect ? "全不选" : "全选"
-          }}</van-checkbox></view
-        >
+        <view>
+          <van-goods-action-icon
+            icon="cart-o"
+            text="购物车"
+            :info="Number(product.length)"
+            @click="onClickCart"
+          />
+        </view>
       </van-submit-bar>
+      <div class="cart-wrap" :class="[showCart ? 'show' : 'hidden']">
+        <div class="content-wrap">
+          <div class="title">已选购商品</div>
+          <div class="action" @click="emptyCart">清空</div>
+        </div>
+        <template v-if="product.length > 0">
+          <div class="p-wrap" v-for="item in product" :key="item._id">
+            <div class="p-name">{{ item.name }}</div>
+            <div class="p-num">{{ item.num }}</div>
+          </div>
+        </template>
+        <template v-else>
+          <div style="text-align:center">
+            暂无商品
+          </div>
+        </template>
+      </div>
     </div>
+    <van-overlay :show="showCart" @click="onClickHide" />
   </div>
 </template>
 
@@ -35,146 +57,71 @@ import { mapState, mapActions } from "vuex";
 
 export default {
   components: { productList },
+  props: {
+    items: {
+      type: Array,
+      required: true,
+    },
+  },
   data() {
     return {
       mainActiveIndex: 0,
       currentItems: [],
-      items: [
-        {
-          text: "日结",
-          children: [
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃3",
-              price: 22,
-              desc: "好好吃",
-              id: 6,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃2",
-              price: 22,
-              desc: "好好吃",
-              id: 5,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃1",
-              price: 22,
-              desc: "好好吃",
-              id: 4,
-              checked: false,
-              num: 1,
-            },
-          ],
-        },
-        {
-          text: "周结",
-          children: [
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃3",
-              price: 22,
-              desc: "胡辉",
-              id: 3,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃3",
-              price: 22,
-              desc: "胡辉",
-              id: 3,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃3",
-              price: 22,
-              desc: "胡辉",
-              id: 3,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃3",
-              price: 22,
-              desc: "胡辉",
-              id: 3,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃3",
-              price: 22,
-              desc: "胡辉",
-              id: 3,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃2",
-              price: 22,
-              desc: "胡辉",
-              id: 2,
-              checked: false,
-              num: 1,
-            },
-            {
-              url: "https://img.yzcdn.cn/vant/apple-1.jpg",
-              name: "小吃1",
-              price: 22,
-              desc: "胡辉",
-              id: 1,
-              checked: false,
-              num: 1,
-            },
-          ],
-        },
-      ],
+      showCart: false,
     };
+  },
+  watch: {
+    items: {
+      handler: function(value) {
+        console.log("order", value);
+        let newArray = [];
+        value.map((item) => item.children);
+        this.currentItems = value;
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   computed: {
     ...mapState({
       isAllSelect: (state) => state.isAllSelect,
-      total: (state) => state.total, // 基本单位是分，转化为元
+      total: (state) => state.total,
       product: (state) => state.product,
     }),
   },
-  mounted() {
-    this.init()
-  },
+  mounted() {},
   methods: {
-    ...mapActions(["setIsAllSelect"]),
-    init() {
-      this.currentItems = this.items[0].children;
+    ...mapActions(["setIsAllSelect", "setProduct"]),
+    onClickHide() {
+      this.showCart = false;
     },
     // 当点击右侧分类导航时，选择对应的商品进行展示
     onClickNav({ detail = {} }) {
       let index = detail.index;
       let { items } = this;
-      this.currentItems = this.items[index].children;
+      // this.currentItems = this.items[index].children;
     },
 
     onClickItem({ detail = {} }) {
       console.log(detail);
     },
+    emptyCart() {
+      this.setProduct([]);
+    },
+    onClickCart() {
+      console.log("show");
+      this.showCart = !this.showCart;
+    },
     onAllSelect(value) {
       this.setIsAllSelect(value.detail);
       if (this.isAllSelect) {
-        this.$refs.productList.productList.map((item) => (item.checked = true));
+        // this.$refs.productList.productList.map((item) => (item.checked = true));
+        this.$refs.productList.productList.map((item) =>
+          item.children.map((p) => (p.checked = true))
+        );
       } else {
-        this.$refs.productList.productList.map(
-          (item) => (item.checked = false)
+        this.$refs.productList.productList.map((item) =>
+          item.children.map((p) => (p.checked = false))
         );
       }
       console.log(value);
@@ -190,18 +137,42 @@ export default {
 
 <style lang="scss" scoped>
 .content {
+  position: relative;
+  height: 100%;
   .main {
   }
   .footer {
-    .van-submit-bar {
-      padding-top: 50upx;
+    position: relative;
+
+    .cart-wrap {
+      position: absolute;
+      left: 0;
+      width: 100vw;
+      background: rgb(255, 255, 255);
+      z-index: 2;
+      bottom: 0;
+      .content-wrap {
+        display: flex;
+        justify-content: space-between;
+        padding: 25upx;
+        .title {
+          font-size: 14px;
+        }
+        .action {
+          font-size: 12px;
+        }
+      }
+      .p-wrap {
+        display: flex;
+        justify-content: space-around;
+      }
     }
-  }
-}
-.main-item {
-  min-height: calc(100vh + 50upx);
-  .van-tree-select {
-    min-height: calc(100vh + 50upx) !important;
+    .show {
+      min-height: 10vh;
+    }
+    .hidden {
+      visibility: hidden;
+    }
   }
 }
 </style>

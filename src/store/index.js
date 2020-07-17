@@ -11,7 +11,9 @@ export default new Vuex.Store({
         product: [], // 购物车中的商品
         // 订单数据
         order: {},
-        remake: '测试一下',
+        remake: '',
+        orderType: '',
+        merchantId:'',
         // 地址信息
         address: [
             {
@@ -47,8 +49,14 @@ export default new Vuex.Store({
         updateRemake(state, data) {
             state.remake = data
         },
+        updateOrderType(state, data) {
+            state.orderType = data
+        },
         updateAddress(state, data) {
             state.address.push(data)
+        },
+        updateMerchantId(state, data) {
+            state.merchantId = data
         },
     },
     actions: {
@@ -67,9 +75,15 @@ export default new Vuex.Store({
         setRemake({ commit }, data) {
             commit('updateRemake', data)
         },
+        setOrderType({ commit }, data) {
+            commit('updateOrderType', data)
+        },
         setAddress({ commit }, data) {
             console.log(data)
             commit('updateAddress', data)
+        },
+        setMerchantId({ commit }, data) {
+            commit('updateMerchantId', data)
         },
     }
 })

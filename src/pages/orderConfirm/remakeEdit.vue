@@ -14,7 +14,7 @@
         />
       </div>
     </div>
-    <van-button type="danger" size="large" @click="submit">确认</van-button>
+    <van-button type="danger" size="large" @click="submit" class="submit-button">确认</van-button>
   </div>
 </template>
 
@@ -29,7 +29,7 @@ export default {
       myRemake: ''
     };
   },
-  onLoad() {
+  mounted() {
     this.myRemake = this.remake
   },
   computed: {
@@ -42,7 +42,6 @@ export default {
     changeFiled(e) {
       console.log(e)
       this.myRemake = e.detail
-      
     },
     onClickLeft() {
       uni.navigateBack({
@@ -61,14 +60,22 @@ export default {
 
 <style lang="scss" scoped>
 .content {
+  position: relative;
+  height: 100vh;
   .nav {
     padding-top: 20upx;
   }
   .main {
-    width: 80vw;
+    width: 90vw;
     margin: 0 auto;
     .address-wrap {
     }
+  }
+  .submit-button{
+  position: absolute;
+  left: 0;
+  bottom: 30upx;
+  width: 100vw;
   }
 }
 </style>
