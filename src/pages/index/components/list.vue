@@ -9,7 +9,7 @@
       >
         <div class="header">
           <div class="numbering">
-            {{ item._id.substring(item._id.length - 5, item._id.length) }}
+            {{ item.numbering }}
             <van-tag color="#f2826a" plain>{{
               item.orderType === "takeAway" ? "外送" : "自取"
             }}</van-tag>

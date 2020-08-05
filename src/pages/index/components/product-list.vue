@@ -165,6 +165,10 @@ export default {
         .right {
           flex: 1;
           .text {
+            width: 105px;
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow:ellipsis;
             .name {
               color: black;
               font-size: 15px;

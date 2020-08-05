@@ -82,7 +82,9 @@
             "van-area": "/wxcomponents/vant/dist/area/index",
             "van-toast": "/wxcomponents/vant/dist/toast/index",
             "van-goods-action-icon": "/wxcomponents/vant/dist/goods-action-icon/index",
-            "van-overlay": "/wxcomponents/vant/dist/overlay/index"
+            "van-overlay": "/wxcomponents/vant/dist/overlay/index",
+            "van-notice-bar": "/wxcomponents/vant/dist/notice-bar/index",
+            "van-datetime-picker": "/wxcomponents/vant/dist/datetime-picker/index"
         }
     }
 }

@@ -10,26 +10,34 @@
           <van-tag type="success" class="tag">外卖配送</van-tag>
         </view>
         <view class="info">
-          <p class="text" @click="showInfo">查看商家信息 <van-icon :name="show ? 'arrow-up': 'arrow-down'" /></p>
+          <p class="text" @click="showInfo">
+            查看商家信息 <van-icon :name="show ? 'arrow-up' : 'arrow-down'" />
+          </p>
           <view class="more" :class="[show ? 'show' : 'hidden']">
             <p>
-              <van-icon name="phone-o" size="15"/>
-              <span style="margin-left:5px" @click="phone(merchantInfo.merchantPhone)">{{merchantInfo.merchantPhone}}</span> </p>
+              <van-icon name="phone-o" size="15" />
+              <span
+                style="margin-left:5px"
+                @click="phone(merchantInfo.merchantPhone)"
+                >{{ merchantInfo.merchantPhone }}</span
+              >
+            </p>
             <p>
-              <van-icon name="location-o" size="15"/>
-              <span style="margin-left:5px">{{merchantInfo.merchantAddress}}</span> </p>
+              <van-icon name="location-o" size="15" />
+              <span style="margin-left:5px">{{
+                merchantInfo.merchantAddress
+              }}</span>
+            </p>
           </view>
-          <!-- <van-dropdown-menu>
-            <van-dropdown-item title="查看商家信息">
-              <van-cell title="电话" :value="merchantInfo.merchantPhone" />
-              <van-cell title="地址" :value="merchantInfo.merchantAddress" />
-            </van-dropdown-item>
-          </van-dropdown-menu> -->
-
         </view>
       </view>
     </view>
     <view class="tab-wrap">
+      <van-notice-bar
+        left-icon="volume-o"
+        mode="closeable"
+        :text="merchantInfo.announcement"
+      />
       <van-tabs active="order" swipeable>
         <van-tab title="下单" name="order">
           <order :items="productItems" />
@@ -38,6 +46,11 @@
           <list :items="orderList" />
         </van-tab>
       </van-tabs>
+      <van-overlay :show="merchantInfo.status" @click="onClickHide">
+        <view class="wrapper">
+          该商铺已关闭
+        </view>
+      </van-overlay>
     </view>
   </view>
 </template>
@@ -58,7 +71,7 @@ export default {
       productItems: [],
       orderList: [],
       merchantInfo: {},
-      show: false
+      show: false,
     };
   },
   mounted() {
@@ -74,13 +87,16 @@ export default {
   },
   methods: {
     ...mapActions(["setMerchantId"]),
+    onClickHide (){
+      console.log(1)
+    },
     phone(tel) {
       uni.makePhoneCall({
         phoneNumber: tel,
       });
     },
-    showInfo(){
-      this.show = !this.show
+    showInfo() {
+      this.show = !this.show;
     },
     test() {
       wx.cloud.init(); //调用前需先调用init
@@ -179,7 +195,7 @@ export default {
         font-weight: bolder;
         padding: 20upx 0;
       }
-      .merchantDesc{
+      .merchantDesc {
         font-size: 12px;
       }
       .support {
@@ -190,31 +206,31 @@ export default {
           margin-right: 20upx;
         }
       }
-      .info{
-        .text{
+      .info {
+        .text {
           text-align: center;
           color: #fff;
           font-size: 12px;
           margin: 10upx 0;
         }
-        .more{
-          padding:20upx;
+        .more {
+          padding: 20upx;
           border: 1px solid #e95d00;
           background-color: #e95d00;
           border-radius: 20px;
           font-size: 12px;
-          transition: all .5s;
+          transition: all 0.5s;
           display: flex;
           justify-content: center;
           overflow: hidden;
           flex-direction: column;
         }
-        .show{
+        .show {
           max-height: 200upx;
         }
-        .hidden{
+        .hidden {
           max-height: 0;
-          padding:0;
+          padding: 0;
           border: 0;
         }
       }
@@ -230,5 +246,12 @@ export default {
 }
 .order {
   min-height: calc(100vh - 220upx);
+}
+.wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #fff;
 }
 </style>

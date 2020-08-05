@@ -36,7 +36,7 @@
         "@dcloudio/uni-mp-weixin": "^2.0.0-26120200226001",
         "@dcloudio/uni-stat": "^2.0.0-26120200226001",
         "copy-webpack-plugin": "^4.6.0",
-        "dayjs": "^1.8.28",
+        "dayjs": "^1.8.32",
         "flyio": "^0.6.2",
         "node-sass": "^4.14.1",
         "regenerator-runtime": "^0.12.1",

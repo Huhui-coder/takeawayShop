@@ -5,29 +5,28 @@
       <div class="merchantInfo">
         <span>店铺：{{ merchantInfo.merchantName }}</span>
         商家电话：
-        <span @click="phone(merchantInfo.merchantPhone)"
-          >{{ merchantInfo.merchantPhone }}</span
-        >
+        <span @click="phone(merchantInfo.merchantPhone)">{{
+          merchantInfo.merchantPhone
+        }}</span>
       </div>
     </div>
     <div class="order-info">
       <div class="numbering">
         <span class="text">
-            订单编号:
-        {{
-          orderData._id.substring(
-            orderData._id.length - 5,
-            orderData._id.length
-          )
-        }}
+          订单编号:
+          {{ orderData.numbering }}
         </span>
         <van-tag color="#f2826a" plain>{{
           orderData.orderType === "takeAway" ? "外送" : "自取"
         }}</van-tag>
       </div>
-      <div class="addressInfo">
+      <div class="addressInfo" v-if="orderData.orderType === 'takeAway'">
         <p>收货地址</p>
         <p v-html="addressFormat(orderData.userAddressInfo)"></p>
+      </div>
+      <div class="addressInfo" v-if="orderData.orderType !== 'takeAway'">
+        <p>取餐时间</p>
+        <p>{{ orderData.mealTime }}</p>
       </div>
 
       <div class="productInfo">
@@ -65,7 +64,7 @@ export default {
     return {
       id: "",
       orderData: {},
-      merchantInfo: {}
+      merchantInfo: {},
     };
   },
   onLoad(option) {
@@ -73,7 +72,6 @@ export default {
     this.id = data;
     let that = this;
     singleOrder({ _id: this.id }).then((res) => {
-      console.log(res);
       if (res.code === 0) {
         that.orderData = res.data;
         that.merchantInfo = res.merchantInfo;
@@ -95,9 +93,11 @@ export default {
       return mapper[status];
     },
     addressFormat(data) {
-      return `<p>${data.provinceName}${data.cityName}${data.countyName}${data.detailInfo}</p>
+      if (data) {
+        return `<p>${data.provinceName}${data.cityName}${data.countyName}${data.detailInfo}</p>
         <p>${data.userName} ${data.telNumber}</p>
         `;
+      }
     },
   },
 };
@@ -141,9 +141,9 @@ export default {
       margin: 20upx 0;
     }
     .numbering {
-        .text{
-            margin-right: 20upx;
-        }
+      .text {
+        margin-right: 20upx;
+      }
     }
     .addressInfo {
     }
