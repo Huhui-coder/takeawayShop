@@ -33,6 +33,7 @@
     <div class="footer">
       <van-submit-bar
         :loading="loading"
+        :disabled="!mealTime"
         :price="total"
         button-text="提交订单"
         @submit="onSubmit"
