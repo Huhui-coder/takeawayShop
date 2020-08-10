@@ -1,7 +1,14 @@
 <template>
   <div class="content">
     <div class="product-wrap">
-      <div class="list-wrap" v-for="(item, index) in productList" :key="index">
+      <scroll-view
+        scroll-y
+        style="height: calc(100vh - 375upx);"
+        scroll-with-animation
+        :scroll-into-view="mainCur"
+        @scroll="VerticalMain"
+      >
+      <div class="list-wrap" v-for="(item, index) in productList" :key="index" :id="'item_' + index">
         <p class="type-name">{{ item.text }}</p>
         <div class="list" v-for="p in item.children" :key="p._id">
           <van-checkbox
@@ -33,6 +40,7 @@
           </div>
         </div>
       </div>
+      </scroll-view>
     </div>
   </div>
 </template>
@@ -45,12 +53,17 @@ export default {
       type: Array,
       default: () => [],
     },
+    mainCur: {
+      type: String,
+      default: 'item' + 0
+    }
   },
   data() {
     return {
       itemsList: [],
       productList: [],
       currentId: 0,
+      load: true
     };
   },
   mounted() {},
@@ -78,7 +91,6 @@ export default {
         }
         this.setProduct(chooseProduct);
         this.setTotal(total);
-        console.log(this.product);
       },
       deep: true,
       immediate: true,
@@ -86,7 +98,6 @@ export default {
     items: {
       handler(value) {
         this.productList = value;
-        console.log("plist", value);
       },
       immediate: true,
       deep: true,
@@ -94,8 +105,40 @@ export default {
   },
   methods: {
     ...mapActions(["setTotal", "setProduct"]),
+    VerticalMain(e){
+      let that = this;
+      let tabHeight = 0;
+      if (this.load) {
+        for (let i = 0; i < this.productList.length; i++) {
+          let view = uni
+            .createSelectorQuery().in(this)
+            .select("#item_" +i);
+          view
+            .fields(
+              {
+                size: true,
+              },
+              (data) => {
+                this.productList[i].top = tabHeight;
+                tabHeight = tabHeight + data.height;
+                this.productList[i].bottom = tabHeight;
+              }
+            )
+            .exec();
+        }
+        this.load = false;
+      }
+      let scrollTop = e.detail.scrollTop + 10;
+      for (let i = 0; i < this.productList.length; i++) {
+        if (scrollTop > this.productList[i].top && scrollTop < this.productList[i].bottom) {
+          this.verticalNavTop = (i - 1) * 50;
+          this.tabCur = i;
+          this.$emit('scroll-update', i)
+          return false;
+        }
+      }
+    },
     fetch() {
-      console.log(1);
     },
     addNumByKey(objArray, property) {
       var array = [];
@@ -110,7 +153,6 @@ export default {
       }, []);
     },
     checkBoxChange(value) {
-      console.log(value);
       let id = value.currentTarget.id;
       let { productList } = this;
       for (let item of productList) {
@@ -122,7 +164,6 @@ export default {
       }
     },
     onChange(value) {
-      console.log(value);
       let id = value.currentTarget.id;
       let detail = value.detail;
       let { productList } = this;

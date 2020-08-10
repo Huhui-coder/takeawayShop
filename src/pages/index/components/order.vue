@@ -7,9 +7,8 @@
         :items="items"
         height="77vh"
         @click-nav="onClickNav"
-        @click-item="onClickItem"
       >
-        <productList slot="content" :items="currentItems" ref="productList" />
+        <productList slot="content" :items="currentItems" ref="productList" :mainCur="mainCur" @scroll-update="scrollUpdate"/>
       </van-tree-select>
     </div>
     <div class="footer">
@@ -68,12 +67,12 @@ export default {
       mainActiveIndex: 0,
       currentItems: [],
       showCart: false,
+      mainCur: 0
     };
   },
   watch: {
     items: {
       handler: function(value) {
-        console.log("order", value);
         let newArray = [];
         value.map((item) => item.children);
         this.currentItems = value;
@@ -92,6 +91,9 @@ export default {
   mounted() {},
   methods: {
     ...mapActions(["setIsAllSelect", "setProduct"]),
+    scrollUpdate(v){
+      this.mainActiveIndex = v 
+    },
     onClickHide() {
       this.showCart = false;
     },
@@ -99,17 +101,12 @@ export default {
     onClickNav({ detail = {} }) {
       let index = detail.index;
       let { items } = this;
-      // this.currentItems = this.items[index].children;
-    },
-
-    onClickItem({ detail = {} }) {
-      console.log(detail);
+      this.mainCur = 'item_' + detail.index
     },
     emptyCart() {
       this.setProduct([]);
     },
     onClickCart() {
-      console.log("show");
       this.showCart = !this.showCart;
     },
     onAllSelect(value) {
@@ -124,7 +121,6 @@ export default {
           item.children.map((p) => (p.checked = false))
         );
       }
-      console.log(value);
     },
     onSubmit() {
       uni.navigateTo({
