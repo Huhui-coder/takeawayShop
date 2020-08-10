@@ -175,9 +175,6 @@ export default {
           });
         },
       });
-      // test().then((res) => {
-      //   console.log(res);
-      // });
     },
   },
 };

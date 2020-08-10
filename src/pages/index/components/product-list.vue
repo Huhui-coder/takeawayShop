@@ -16,7 +16,7 @@
             :id="p._id"
             @change="checkBoxChange"
           />
-          <div class="left">
+          <div class="left" @click="showProductModal(p)">
             <div class="img">
               <img :src="p.url" alt="" />
             </div>
@@ -42,6 +42,19 @@
       </div>
       </scroll-view>
     </div>
+
+    <!-- 单个商品展示详情-->
+  <van-dialog
+  use-slot
+  :title="currentProduct.name"
+  :show="showDialog"
+  @close="onClose"
+  @confirm="onClose"
+>
+  <image v-if="currentProduct.url" :src="currentProduct.url" />
+  <span>{{currentProduct.desc}}</span>
+</van-dialog>
+
   </div>
 </template>
 
@@ -60,6 +73,8 @@ export default {
   },
   data() {
     return {
+      currentProduct: {},
+      showDialog: false,
       itemsList: [],
       productList: [],
       currentId: 0,
@@ -105,6 +120,10 @@ export default {
   },
   methods: {
     ...mapActions(["setTotal", "setProduct"]),
+    onClose(){
+      this.showDialog = false
+      this.currentProduct = {}
+    },
     VerticalMain(e){
       let that = this;
       let tabHeight = 0;
@@ -152,6 +171,13 @@ export default {
         return acc;
       }, []);
     },
+    emptyAllProduct(){
+      for (let item of this.productList) {
+          for (let p of item.children) {
+            p.checked = false
+          }
+        }
+    },
     checkBoxChange(value) {
       let id = value.currentTarget.id;
       let { productList } = this;
@@ -162,6 +188,11 @@ export default {
           }
         }
       }
+    },
+    showProductModal(v) {
+      this.showDialog = true
+      this.currentProduct = v
+      console.log(v)
     },
     onChange(value) {
       let id = value.currentTarget.id;

@@ -7,6 +7,7 @@
         :items="items"
         height="77vh"
         @click-nav="onClickNav"
+        @click-item="onClickItem"
       >
         <productList slot="content" :items="currentItems" ref="productList" :mainCur="mainCur" @scroll-update="scrollUpdate"/>
       </van-tree-select>
@@ -90,7 +91,7 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions(["setIsAllSelect", "setProduct"]),
+    ...mapActions(["setIsAllSelect", "setProduct", "setTotal"]),
     scrollUpdate(v){
       this.mainActiveIndex = v 
     },
@@ -103,8 +104,13 @@ export default {
       let { items } = this;
       this.mainCur = 'item_' + detail.index
     },
+    onClickItem({ detail = {} }){
+      console.log(detail)
+    },
     emptyCart() {
       this.setProduct([]);
+      this.setTotal(0);
+      this.$refs.productList.emptyAllProduct()
     },
     onClickCart() {
       this.showCart = !this.showCart;
@@ -112,7 +118,6 @@ export default {
     onAllSelect(value) {
       this.setIsAllSelect(value.detail);
       if (this.isAllSelect) {
-        // this.$refs.productList.productList.map((item) => (item.checked = true));
         this.$refs.productList.productList.map((item) =>
           item.children.map((p) => (p.checked = true))
         );

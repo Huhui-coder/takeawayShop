@@ -84,7 +84,8 @@
             "van-goods-action-icon": "/wxcomponents/vant/dist/goods-action-icon/index",
             "van-overlay": "/wxcomponents/vant/dist/overlay/index",
             "van-notice-bar": "/wxcomponents/vant/dist/notice-bar/index",
-            "van-datetime-picker": "/wxcomponents/vant/dist/datetime-picker/index"
+            "van-datetime-picker": "/wxcomponents/vant/dist/datetime-picker/index",
+            "van-dialog": "/wxcomponents/vant/dist/dialog/index"
         }
     }
 }
