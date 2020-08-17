@@ -32,7 +32,7 @@
         </div>
         <div class="total">
           <div class="text">合计</div>
-          <div class="money">￥{{ total / 100 }}</div>
+          <div class="money">￥{{ total }}</div>
         </div>
       </div>
       <van-divider />

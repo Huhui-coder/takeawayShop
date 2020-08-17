@@ -2,7 +2,7 @@
   <view class="content">
     <view class="merchant-wrap">
       <view class="desc">
-        <view class="name">{{ merchantInfo.merchantName }}</view>
+        <view class="name">{{ merchantInfo.shopName }}</view>
         <view class="merchantDesc">{{ merchantInfo.merchantDesc }}</view>
         <view class="support">
           <span class="text">本店支持</span>
@@ -46,7 +46,7 @@
           <list :items="orderList" />
         </van-tab>
       </van-tabs>
-      <van-overlay :show="merchantInfo.status" @click="onClickHide">
+      <van-overlay :show="!merchantInfo.status" @click="onClickHide">
         <view class="wrapper">
           该商铺已关闭
         </view>
@@ -70,7 +70,9 @@ export default {
     return {
       productItems: [],
       orderList: [],
-      merchantInfo: {},
+      merchantInfo: {
+        status: true
+      },
       show: false,
     };
   },

@@ -38,7 +38,7 @@ export default new Vuex.Store({
             state.isAllSelect = data
         },
         updateTotal(state, data) {
-            state.total = data * 100
+            state.total = data
         },
         updateProduct(state, data) {
             state.product = data

@@ -38,7 +38,7 @@
         </div>
         <van-divider />
         <p class="total">
-          总计:<span class="moeny"> {{ orderData.total / 100 }}</span>
+          总计:<span class="moeny"> {{ orderData.total }}</span>
         </p>
       </div>
       <div class="orderInfo">
@@ -87,7 +87,7 @@ export default {
     infoFormat(status) {
       let mapper = {
         ordered: "您已成功下单，待商家确认",
-        receiving: "商家已确认，即将外送",
+        receiving: "商家已出餐,请到指定地点取餐",
         complete: "订单已完成",
       };
       return mapper[status];

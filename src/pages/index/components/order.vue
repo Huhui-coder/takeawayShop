@@ -14,7 +14,7 @@
     </div>
     <div class="footer">
       <van-submit-bar
-        :price="total"
+        :price="total * 100"
         button-text="提交订单"
         :disabled="total === 0"
         @submit="onSubmit"

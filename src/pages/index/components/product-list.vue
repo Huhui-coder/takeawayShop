@@ -68,7 +68,7 @@ export default {
     },
     mainCur: {
       type: String,
-      default: 'item' + 0
+      default: 'item_' + 0
     }
   },
   data() {
@@ -105,6 +105,7 @@ export default {
           }
         }
         this.setProduct(chooseProduct);
+        console.log(total)
         this.setTotal(total);
       },
       deep: true,

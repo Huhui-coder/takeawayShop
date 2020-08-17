@@ -27,7 +27,7 @@
           </div>
           <div class="info">
             共{{item.product.length}}件商品 合计
-            <span class="money"> ￥{{ item.total / 100 }} </span>
+            <span class="money"> ￥{{ item.total }} </span>
           </div>
         </div>
       </div>
