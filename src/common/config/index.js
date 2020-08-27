@@ -1,4 +1,4 @@
-const dev = 'http://127.0.0.1:3000'
+const dev = 'https://127.0.0.1:3000'
 const pro = 'https://hit-coder.club:3000'
 
 const baseUrl = pro
