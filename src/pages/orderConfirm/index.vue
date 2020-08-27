@@ -8,6 +8,9 @@
         <van-tab title="到店自提">
           <self-take />
         </van-tab>
+         <van-tab title="堂食">
+          <dine />
+        </van-tab>
       </van-tabs>
     </div>
   </div>
@@ -16,10 +19,12 @@
 <script>
 import selfTake from "./components/selfTake";
 import takeAway from "./components/takeAway";
+import dine from "./components/dine";
 export default {
   components: {
     selfTake,
     takeAway,
+    dine
   },
   data() {
     return {};

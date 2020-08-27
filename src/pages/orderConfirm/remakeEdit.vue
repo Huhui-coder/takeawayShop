@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <div class="main">
-      <div class="address-wrap">
+      <div class="remake-wrap">
         <van-field
           :value="myRemake"
           label="备注"
@@ -20,8 +20,6 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import Toast from "../../wxcomponents/vant/dist/toast/toast";
-import AreaList from "./area";
 
 export default {
   data() {
@@ -68,7 +66,7 @@ export default {
   .main {
     width: 90vw;
     margin: 0 auto;
-    .address-wrap {
+    .remake-wrap {
     }
   }
   .submit-button{

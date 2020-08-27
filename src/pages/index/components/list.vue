@@ -11,7 +11,7 @@
           <div class="numbering">
             {{ item.numbering }}
             <van-tag color="#f2826a" plain>{{
-              item.orderType === "takeAway" ? "外送" : "自取"
+              orderTypeInfo(item.orderType)
             }}</van-tag>
           </div>
           <div class="status">
@@ -26,7 +26,7 @@
             {{ formatTime(item.create_time) }}
           </div>
           <div class="info">
-            共{{item.product.length}}件商品 合计
+            共{{ item.product.length }}件商品 合计
             <span class="money"> ￥{{ item.total }} </span>
           </div>
         </div>
@@ -48,6 +48,14 @@ export default {
         ordered: "用户已下单",
         receiving: "商家已确认",
         complete: "订单已完成",
+      };
+      return mapper[data];
+    },
+    orderTypeInfo(data) {
+      let mapper = {
+        takeAway: "外送",
+        selfTake: "自提",
+        dine: "堂食",
       };
       return mapper[data];
     },

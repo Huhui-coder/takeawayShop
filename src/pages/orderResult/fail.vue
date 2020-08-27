@@ -1,11 +1,13 @@
 <template>
   <div class="container">
     <div class="tip">
-    <van-icon name="warning-o" color="red" size="50px"/>
-    <p>下单失败</p>
+      <van-icon name="warning-o" color="red" size="50px" />
+      <p>下单失败</p>
     </div>
     <div class="btn">
-    <van-button plain type="info" @click="goPage('home')">回到首页</van-button>
+      <van-button plain type="info" @click="goPage('home')"
+        >回到首页</van-button
+      >
     </div>
   </div>
 </template>
@@ -13,13 +15,7 @@
 <script>
 export default {
   data() {
-    return {
-      productInfo: {},
-    };
-  },
-  onLoad(option) {
-    let data = JSON.parse(decodeURIComponent(option.data));
-    this.productInfo = data;
+    return {};
   },
   methods: {
     goPage(page, id) {
@@ -34,15 +30,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  .tip{
+  .tip {
     margin: 30upx;
+    text-align: center;
   }
-  .btn{}
+  .btn {
+  }
 }
 </style>

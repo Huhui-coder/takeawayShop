@@ -2,6 +2,10 @@
 export default {
   onLaunch: function() {
     console.log("App Launch");
+    wx.cloud.init({
+      // env: "test-k78d2", // 测试环境
+      env: "pro-wir1p", // 正式环境
+    });
   },
   onShow: function() {
     console.log("App Show");

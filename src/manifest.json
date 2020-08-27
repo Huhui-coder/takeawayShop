@@ -1,6 +1,6 @@
 {
 	"name": "",
-	"appid": "wxafd014ef39980177",
+	"appid": "wxb956b63cebf6677f",
 	"description": "",
 	"versionName": "1.0.0",
 	"versionCode": "100",
@@ -54,7 +54,7 @@
 
 	},
 	"mp-weixin": { /* 微信小程序特有相关 */
-		"appid": "wxafd014ef39980177",
+		"appid": "wxb956b63cebf6677f",
 		"cloudfunctionRoot": "./functions/", // 表明云函数的文件目录
 		"setting": {
 			"urlCheck": false

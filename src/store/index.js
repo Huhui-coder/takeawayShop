@@ -13,24 +13,7 @@ export default new Vuex.Store({
         order: {},
         remake: '',
         orderType: '',
-        merchantId:'',
-        // 地址信息
-        address: [
-            {
-                name: 'hihi',
-                phone: 1797979,
-                address: '重庆市',
-                detail: '2栋',
-                default: true
-            },
-            {
-                name: 'hihi',
-                phone: 1797979,
-                address: '重庆市',
-                detail: '2栋',
-                default: false
-            }
-        ]
+        merchantId:''
     },
     getters: {},
     mutations: {
@@ -51,9 +34,6 @@ export default new Vuex.Store({
         },
         updateOrderType(state, data) {
             state.orderType = data
-        },
-        updateAddress(state, data) {
-            state.address.push(data)
         },
         updateMerchantId(state, data) {
             state.merchantId = data
@@ -77,10 +57,6 @@ export default new Vuex.Store({
         },
         setOrderType({ commit }, data) {
             commit('updateOrderType', data)
-        },
-        setAddress({ commit }, data) {
-            console.log(data)
-            commit('updateAddress', data)
         },
         setMerchantId({ commit }, data) {
             commit('updateMerchantId', data)

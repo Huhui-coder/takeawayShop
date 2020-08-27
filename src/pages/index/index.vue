@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { login, test, allOrder } from "../../common/api";
+import { login, allOrder } from "../../common/api";
 import order from "./components/order";
 import list from "./components/list";
 import { mapState, mapActions } from "vuex";
@@ -77,9 +77,8 @@ export default {
     };
   },
   mounted() {
-    this.setMerchantId("5f0864d3703148619a8ab985");
+    this.setMerchantId("5f45edfacc91256a4856ae6f");
     this.login();
-    // this.test();
   },
   onLoad() {},
   computed: {
@@ -100,17 +99,6 @@ export default {
     showInfo() {
       this.show = !this.show;
     },
-    test() {
-      wx.cloud.init(); //调用前需先调用init
-      wx.cloud
-        .callFunction({
-          name: "test",
-          data: {},
-        })
-        .then((res) => {
-          console.log(res.result);
-        });
-    },
     login() {
       let that = this;
       wx.login({
@@ -122,8 +110,8 @@ export default {
           wx.request({
             url: "https://api.weixin.qq.com/sns/jscode2session", //接口地址
             data: {
-              appid: "wxafd014ef39980177",
-              secret: "979625ca6571f4080b94610b4e024ed8",
+              appid: "wxb956b63cebf6677f",
+              secret: "7f63060321ac91eeed447f506ad1823d",
               js_code: res.code,
               grant_type: "authorization_code",
             },
@@ -132,8 +120,9 @@ export default {
             },
             success: function(res) {
               console.log(res.data);
-              // let openid = res.data.openid; //获取到的openid
-              let openid = "898989"; //获取到的openid
+              let openid = res.data.openid; //获取到的openid
+              // let openid = "898989"; //获取到的openid
+              console.log(openid)
               that.$localStore.set("openid", openid);
 
               let session_key = res.data.session_key; //获取到session_key

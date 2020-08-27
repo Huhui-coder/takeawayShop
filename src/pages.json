@@ -41,18 +41,6 @@
             "style": {
                 "navigationBarTitleText": "备注编辑"
             }
-        },
-        {
-            "path": "pages/orderConfirm/addressList",
-            "style": {
-                "navigationBarTitleText": "我的地址"
-            }
-        },
-        {
-            "path": "pages/orderConfirm/addressEdit",
-            "style": {
-                "navigationBarTitleText": "地址编辑"
-            }
         }
     ],
     "globalStyle": {

@@ -113,7 +113,8 @@ export default {
       this.$refs.productList.emptyAllProduct()
     },
     onClickCart() {
-      this.showCart = !this.showCart;
+      // this.showCart = !this.showCart;
+      this.showCart = false
     },
     onAllSelect(value) {
       this.setIsAllSelect(value.detail);

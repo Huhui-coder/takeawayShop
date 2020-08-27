@@ -1,16 +1,6 @@
 <template>
   <div class="content">
     <div class="main">
-      <van-cell title="到店时间" :value="mealTime" @click="show = true" />
-      <van-popup :show="show" position="bottom">
-        <van-datetime-picker
-          type="datetime"
-          :value="currentDate"
-          @cancel="show = false"
-          @confirm="confirmTimePick"
-        />
-      </van-popup>
-      <van-divider />
       <div class="p-list">
         <div class="productlist" v-for="(item, index) in product" :key="index">
           <div class="p-name">{{ item.name }}</div>
@@ -30,7 +20,6 @@
     <div class="footer">
       <van-submit-bar
         :loading="loading"
-        :disabled="!mealTime"
         :price="total * 100"
         button-text="提交订单"
         @submit="onSubmit"
@@ -42,18 +31,11 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { order } from "../../../common/api";
-import dayjs from "dayjs";
 
 export default {
   data() {
     return {
-      show: false,
-      minDate: new Date().getTime(),
-      maxDate: new Date(2019, 10, 1).getTime(),
-      currentDate: new Date().getTime(),
-      loading: false,
-      userAddressInfo: this.$localStore.get("userAddressInfo"),
-      mealTime:dayjs(new Date().getTime()).format("YYYY-MM-DD HH:mm:ss")
+      loading: false
     };
   },
   computed: {
@@ -65,19 +47,14 @@ export default {
       orderType: (state) => state.orderType,
       merchantId: (state) => state.merchantId,
     }),
-    
   },
   methods: {
     ...mapActions(["setTotal", "setProduct", "setOrderType"]),
-    confirmTimePick(val) {
-      this.show = false;
-      if (val.detail)
-        this.mealTime = dayjs(val.detail).format("YYYY-MM-DD HH:mm:ss");
-    },
     go(path) {
       uni.navigateTo({
         url: `/pages/orderConfirm/${path}`,
       });
+      console.log(1);
     },
     uuid(len, radix) {
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split(
@@ -92,12 +69,8 @@ export default {
       return uuid.join("");
     },
     onSubmit() {
-      // 判断时间是否超出一个小时
-      this.currentDate = dayjs(this.currentDate).format("YYYY-MM-DD HH:mm:ss");
-      let isScheduled = dayjs(this.mealTime).diff(dayjs(this.currentDate),'hour') > 0
-      console.log('isScheduled', isScheduled)
       this.loading = true;
-      this.setOrderType("selfTake");
+      this.setOrderType("dine");
       let openid = this.$localStore.get("openid");
       let {
         merchantId,
@@ -105,8 +78,6 @@ export default {
         product,
         orderType,
         total,
-        mealTime,
-        userAddressInfo
       } = this;
       let that = this;
       // 获取所有的参数
@@ -117,9 +88,6 @@ export default {
         product,
         orderType,
         total,
-        mealTime,
-        isScheduled,
-        userAddressInfo
       };
       let orderidUUID = that.uuid(32, 16);
       let nonceStrUUID = that.uuid(32, 16);

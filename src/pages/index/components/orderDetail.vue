@@ -3,7 +3,7 @@
     <div class="info">
       {{ infoFormat(orderData.status) }}
       <div class="merchantInfo">
-        <span>店铺：{{ merchantInfo.merchantName }}</span>
+        <span>店铺：{{ merchantInfo.shopName }}</span>
         商家电话：
         <span @click="phone(merchantInfo.merchantPhone)">{{
           merchantInfo.merchantPhone

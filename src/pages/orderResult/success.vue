@@ -3,6 +3,7 @@
     <div class="tip">
     <van-icon name="certificate" color="green" size="50px"/>
     <p>下单成功</p>
+    <p>订单号:{{productInfo.numbering}}</p>
     </div>
     <div class="btn">
     <van-button plain type="primary" @click="goPage('detail', productInfo._id)"
@@ -49,6 +50,7 @@ export default {
   height: 100vh;
   .tip{
     margin: 30upx;
+    text-align: center;
   }
   .btn{}
 }
