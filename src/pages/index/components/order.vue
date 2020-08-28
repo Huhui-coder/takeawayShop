@@ -142,6 +142,7 @@ export default {
   position: relative;
   height: 100%;
   .main {
+    padding-bottom: 60upx;
   }
   .footer {
     position: relative;

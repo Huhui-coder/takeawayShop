@@ -10,6 +10,15 @@ export const test = (data) => {
 	})
 }
 
+// 登录之前获取用户的openid 啥的
+export const preLogin = (data) => {
+	return http.request({
+		url: '/user/preLogin',
+		data,
+		method: 'post'
+	})
+}
+
 // 登录
 export const login = (data) => {
 	return http.request({

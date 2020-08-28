@@ -159,8 +159,14 @@ export default {
                   if (res.provinceName === res.cityName) {
                     delete params.provinceName;
                     that.$localStore.set("userAddressInfo", params);
+                    that.userAddressInfo = that.$localStore.get(
+                    "userAddressInfo"
+                  );
                   } else {
                     that.$localStore.set("userAddressInfo", params);
+                    that.userAddressInfo = that.$localStore.get(
+                    "userAddressInfo"
+                  );
                   }
                 },
                 fail(e) {

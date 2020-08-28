@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { login, allOrder } from "../../common/api";
+import { login, preLogin, allOrder } from "../../common/api";
 import order from "./components/order";
 import list from "./components/list";
 import { mapState, mapActions } from "vuex";
@@ -71,7 +71,7 @@ export default {
       productItems: [],
       orderList: [],
       merchantInfo: {
-        status: true
+        status: true,
       },
       show: false,
     };
@@ -88,8 +88,8 @@ export default {
   },
   methods: {
     ...mapActions(["setMerchantId"]),
-    onClickHide (){
-      console.log(1)
+    onClickHide() {
+      console.log(1);
     },
     phone(tel) {
       uni.makePhoneCall({
@@ -103,66 +103,53 @@ export default {
       let that = this;
       wx.login({
         success: (res) => {
-          // 获取到用户的 code 之后：res.code
           console.log("用户的code：" + res.code);
-          // 可以传给后台，再经过解析获取用户的 openid
-          // 或者可以直接使用微信的提供的接口直接获取 openid ，方法如下：
-          wx.request({
-            url: "https://api.weixin.qq.com/sns/jscode2session", //接口地址
-            data: {
-              appid: "wxb956b63cebf6677f",
-              secret: "7f63060321ac91eeed447f506ad1823d",
-              js_code: res.code,
-              grant_type: "authorization_code",
-            },
-            header: {
-              "content-type": "application/json", //默认值
-            },
-            success: function(res) {
-              console.log(res.data);
-              let openid = res.data.openid; //获取到的openid
-              // let openid = "898989"; //获取到的openid
-              console.log(openid)
-              that.$localStore.set("openid", openid);
+          // 先请求 preLogin 获取用户的 openid 和 session_key
+          const params = {
+            appid: "wxb956b63cebf6677f",
+            grant_type: "authorization_code",
+            js_code: res.code,
+          };
+          preLogin(params).then((res) => {
+            let openid = res.data.openid; //获取到的openid
+            that.$localStore.set("openid", openid);
+            let session_key = res.data.session_key; //获取到session_key
+            let { merchantId } = that;
+            const params = { openid, session_key, merchantId };
 
-              let session_key = res.data.session_key; //获取到session_key
-              let { merchantId } = that;
-              //如果返回成功，则将OPEN_ID和SESSION_KEY提交请求给本地服务器
-              const params = { openid, session_key, merchantId };
-              login(params).then((res) => {
-                let p_data = res.data.product;
-                that.merchantInfo = res.data;
-                var nData = p_data.filter((item) => item.status === "normal");
-                var newArray = [];
-                var reducer = function(
-                  accumulator,
-                  currentValue,
-                  currentIndex,
-                  array
-                ) {
-                  if (accumulator.includes(currentValue.pType)) {
-                    newArray.map((item) => {
-                      if (item.text === currentValue.pType) {
-                        item.children.push(currentValue);
-                      }
-                    });
-                  } else {
-                    accumulator.push(currentValue.pType);
-                    newArray.push({
-                      text: currentValue.pType,
-                      children: [].concat(currentValue),
-                    });
-                  }
-                  return accumulator;
-                };
-                nData.reduce(reducer, []);
-                that.productItems = newArray;
-                let openid = that.$localStore.get("openid");
-                allOrder({ openid }).then((res) => {
-                  that.orderList = res.data;
-                });
+            login(params).then((res) => {
+              let p_data = res.data.product;
+              that.merchantInfo = res.data;
+              var nData = p_data.filter((item) => item.status === "normal");
+              var newArray = [];
+              var reducer = function(
+                accumulator,
+                currentValue,
+                currentIndex,
+                array
+              ) {
+                if (accumulator.includes(currentValue.pType)) {
+                  newArray.map((item) => {
+                    if (item.text === currentValue.pType) {
+                      item.children.push(currentValue);
+                    }
+                  });
+                } else {
+                  accumulator.push(currentValue.pType);
+                  newArray.push({
+                    text: currentValue.pType,
+                    children: [].concat(currentValue),
+                  });
+                }
+                return accumulator;
+              };
+              nData.reduce(reducer, []);
+              that.productItems = newArray;
+              let openid = that.$localStore.get("openid");
+              allOrder({ openid }).then((res) => {
+                that.orderList = res.data;
               });
-            },
+            });
           });
         },
       });
@@ -173,6 +160,7 @@ export default {
 
 <style lang="scss" scoped>
 .content {
+  max-height: 100vh;
   .merchant-wrap {
     background-color: #ff6600;
     color: white;
@@ -235,7 +223,7 @@ export default {
 .order {
   min-height: calc(100vh - 220upx);
 }
-.wrapper{
+.wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
