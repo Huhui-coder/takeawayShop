@@ -17,14 +17,14 @@
           {{ orderData.numbering }}
         </span>
         <van-tag color="#f2826a" plain>{{
-          orderData.orderType === "takeAway" ? "外送" : "自取"
-        }}</van-tag>
+              orderTypeInfo(orderData.orderType)
+            }}</van-tag>
       </div>
       <div class="addressInfo" v-if="orderData.orderType === 'takeAway'">
         <p>收货地址</p>
         <p v-html="addressFormat(orderData.userAddressInfo)"></p>
       </div>
-      <div class="addressInfo" v-if="orderData.orderType !== 'takeAway'">
+      <div class="addressInfo" v-if="!orderData.orderType === 'dine'">
         <p>取餐时间</p>
         <p>{{ orderData.mealTime }}</p>
       </div>
@@ -53,6 +53,7 @@
         </div>
       </div>
     </div>
+    <loading/>
   </div>
 </template>
 
@@ -71,14 +72,22 @@ export default {
     let data = option.id;
     this.id = data;
     let that = this;
-    singleOrder({ _id: this.id }).then((res) => {
+      singleOrder({ _id: this.id }).then((res) => {
       if (res.code === 0) {
         that.orderData = res.data;
         that.merchantInfo = res.merchantInfo;
       }
-    });
+    }); 
   },
   methods: {
+    orderTypeInfo(data) {
+      let mapper = {
+        takeAway: "外送",
+        selfTake: "自提",
+        dine: "堂食",
+      };
+      return mapper[data];
+    },
     phone(tel) {
       uni.makePhoneCall({
         phoneNumber: tel,
@@ -172,5 +181,16 @@ export default {
       }
     }
   }
+}
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.block {
+  width: 24px;
+  height: 24px;
 }
 </style>

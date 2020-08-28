@@ -13,7 +13,8 @@ export default new Vuex.Store({
         order: {},
         remake: '',
         orderType: '',
-        merchantId:''
+        merchantId:'',
+        showLoading: false,
     },
     getters: {},
     mutations: {
@@ -38,6 +39,9 @@ export default new Vuex.Store({
         updateMerchantId(state, data) {
             state.merchantId = data
         },
+        updateLoading(state, data) {
+            state.showLoading = data
+        },
     },
     actions: {
         setIsAllSelect({ commit }, data) {
@@ -60,6 +64,9 @@ export default new Vuex.Store({
         },
         setMerchantId({ commit }, data) {
             commit('updateMerchantId', data)
+        },
+        setLoading({ commit }, data) {
+            commit('updateLoading', data)
         },
     }
 })

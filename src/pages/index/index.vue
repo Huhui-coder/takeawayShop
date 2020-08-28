@@ -1,4 +1,5 @@
 <template>
+    <skeleton :row="12" animate :loading="loading" style="margin-top:124rpx;" :banner="true" :title="true">
   <view class="content">
     <view class="merchant-wrap">
       <view class="desc">
@@ -40,7 +41,7 @@
       />
       <van-tabs active="order" swipeable>
         <van-tab title="下单" name="order">
-          <order :items="productItems" />
+          <order :items="productItems" class="order"/>
         </van-tab>
         <van-tab title="我的订单" name="list">
           <list :items="orderList" />
@@ -52,7 +53,9 @@
         </view>
       </van-overlay>
     </view>
+
   </view>
+  </skeleton>
 </template>
 
 <script>
@@ -60,11 +63,13 @@ import { login, preLogin, allOrder } from "../../common/api";
 import order from "./components/order";
 import list from "./components/list";
 import { mapState, mapActions } from "vuex";
+import skeleton from '../../components/xinyi-skeleton/skeleton'
 
 export default {
   components: {
     order,
     list,
+    skeleton
   },
   data() {
     return {
@@ -74,11 +79,13 @@ export default {
         status: true,
       },
       show: false,
+      loading: false
     };
   },
   mounted() {
     this.setMerchantId("5f45edfacc91256a4856ae6f");
     this.login();
+    this.loading = true
   },
   onLoad() {},
   computed: {
@@ -148,6 +155,7 @@ export default {
               let openid = that.$localStore.get("openid");
               allOrder({ openid }).then((res) => {
                 that.orderList = res.data;
+                that.loading = false
               });
             });
           });
@@ -214,11 +222,6 @@ export default {
   }
   .tab-wrap {
   }
-}
-.vanTabs {
-}
-.vanTab {
-  min-height: calc(100vh - 220upx);
 }
 .order {
   min-height: calc(100vh - 220upx);

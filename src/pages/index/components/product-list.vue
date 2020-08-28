@@ -215,7 +215,7 @@ export default {
 .content {
   .product-wrap {
     background-color: white;
-    padding-bottom: 30upx;
+    margin-bottom: 30upx;
     .list-wrap {
       background-color: white;
       .type-name {

@@ -155,19 +155,9 @@ export default {
                     detailInfo: res.detailInfo,
                     telNumber: res.telNumber,
                   };
-
-                  if (res.provinceName === res.cityName) {
-                    delete params.provinceName;
-                    that.$localStore.set("userAddressInfo", params);
+                     that.$localStore.set("userAddressInfo", params);
                     that.userAddressInfo = that.$localStore.get(
-                    "userAddressInfo"
-                  );
-                  } else {
-                    that.$localStore.set("userAddressInfo", params);
-                    that.userAddressInfo = that.$localStore.get(
-                    "userAddressInfo"
-                  );
-                  }
+                    "userAddressInfo")
                 },
                 fail(e) {
                   that.$toast("您取消了地址位置授权，请选择确定");

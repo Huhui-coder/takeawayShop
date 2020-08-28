@@ -13,11 +13,11 @@ Vue.mixin({
     methods: {
         formatTime(time) {
             if (!time) return '-'
-            return dayjs(time).format('YYYY-MM-DD HH:mm:ss:ss')
+            return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
         }
     },
     filters: {
-        dateformat(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss:ss') {
+        dateformat(dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
             return dayjs(dataStr).format(pattern) || '-'
         }
     }
