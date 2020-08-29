@@ -18,7 +18,7 @@
           />
           <div class="left" @click="showProductModal(p)">
             <div class="img">
-              <img :src="p.url" alt="" />
+              <image class="img" mode="scaleToFill" :lazy-load="true" :src="p.url"></image>
             </div>
           </div>
           <div class="right">
