@@ -72,7 +72,7 @@ export default {
     let data = option.id;
     this.id = data;
     let that = this;
-      singleOrder({ _id: this.id }).then((res) => {
+        singleOrder({ _id: this.id }).then((res) => {
       if (res.code === 0) {
         that.orderData = res.data;
         that.merchantInfo = res.merchantInfo;

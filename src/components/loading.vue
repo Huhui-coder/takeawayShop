@@ -35,13 +35,14 @@ export default {
   position: absolute;
  left: 0;
  top: 0;
-  background-color: #fff;
 }
 
 .block {
   width: 124px;
   height: 124px;
-  background-color: #fff;
-  text-align: center;
+  background-color: #999aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

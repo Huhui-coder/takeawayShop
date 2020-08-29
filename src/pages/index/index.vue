@@ -1,5 +1,4 @@
 <template>
-    <skeleton :row="12" animate :loading="loading" style="margin-top:124rpx;" :banner="true" :title="true">
   <view class="content">
     <view class="merchant-wrap">
       <view class="desc">
@@ -44,7 +43,7 @@
           <order :items="productItems" class="order"/>
         </van-tab>
         <van-tab title="我的订单" name="list">
-          <list :items="orderList" />
+          <list />
         </van-tab>
       </van-tabs>
       <van-overlay :show="!merchantInfo.status" @click="onClickHide">
@@ -53,9 +52,7 @@
         </view>
       </van-overlay>
     </view>
-
   </view>
-  </skeleton>
 </template>
 
 <script>
@@ -63,29 +60,24 @@ import { login, preLogin, allOrder } from "../../common/api";
 import order from "./components/order";
 import list from "./components/list";
 import { mapState, mapActions } from "vuex";
-import skeleton from '../../components/xinyi-skeleton/skeleton'
 
 export default {
   components: {
     order,
-    list,
-    skeleton
+    list
   },
   data() {
     return {
       productItems: [],
-      orderList: [],
       merchantInfo: {
         status: true,
       },
-      show: false,
-      loading: false
+      show: false
     };
   },
   mounted() {
     this.setMerchantId("5f45edfacc91256a4856ae6f");
     this.login();
-    this.loading = true
   },
   onLoad() {},
   computed: {
@@ -152,11 +144,6 @@ export default {
               };
               nData.reduce(reducer, []);
               that.productItems = newArray;
-              let openid = that.$localStore.get("openid");
-              allOrder({ openid }).then((res) => {
-                that.orderList = res.data;
-                that.loading = false
-              });
             });
           });
         },

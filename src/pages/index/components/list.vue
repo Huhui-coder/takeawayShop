@@ -3,7 +3,7 @@
     <div class="list-wrap">
       <div
         class="list"
-        v-for="item in items"
+        v-for="item in orderList"
         :key="item._id"
         @click="goOrderDetail(item._id)"
       >
@@ -36,13 +36,25 @@
 </template>
 
 <script>
+import { allOrder } from "../../../common/api";
+
 export default {
-  props: {
-    items: {
-      type: Array,
-    },
+  data() {
+    return {
+      orderList: []
+    }
+  },
+  mounted(){
+    this.fetch()
   },
   methods: {
+    fetch() {
+      let openid = this.$localStore.get("openid");
+      let that = this;
+      allOrder({ openid }).then((res) => {
+        that.orderList = res.data;
+      });
+    },
     statusInfo(data) {
       let mapper = {
         ordered: "用户已下单",
