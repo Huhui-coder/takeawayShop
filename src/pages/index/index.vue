@@ -40,7 +40,7 @@
       />
       <van-tabs active="order" swipeable>
         <van-tab title="下单" name="order">
-          <order :items="productItems" class="order"/>
+          <order :items="productItems" :merchantInfo="merchantInfo" class="order" />
         </van-tab>
         <van-tab title="我的订单" name="list">
           <list />
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { login, preLogin, allOrder } from "../../common/api";
+import { login, preLogin } from "../../common/api";
 import order from "./components/order";
 import list from "./components/list";
 import { mapState, mapActions } from "vuex";
@@ -86,7 +86,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(["setMerchantId"]),
+    ...mapActions(["setMerchantId", "setMerchantInfo"]),
     onClickHide() {
       console.log(1);
     },
@@ -119,6 +119,7 @@ export default {
             login(params).then((res) => {
               let p_data = res.data.product;
               that.merchantInfo = res.data;
+              that.setMerchantInfo(res.data);
               var nData = p_data.filter((item) => item.status === "normal");
               var newArray = [];
               var reducer = function(

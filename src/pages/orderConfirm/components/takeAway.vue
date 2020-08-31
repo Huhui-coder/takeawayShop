@@ -64,9 +64,8 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { order } from "../../../common/api";
+import { order, geocoding } from "../../../common/api";
 import dayjs from "dayjs";
-
 
 export default {
   data() {
@@ -75,7 +74,7 @@ export default {
       loading: false,
       currentDate: new Date().getTime(),
       userAddressInfo: this.$localStore.get("userAddressInfo"),
-      mealTime:dayjs(new Date().getTime()).format("YYYY-MM-DD HH:mm:ss")
+      mealTime: dayjs(new Date().getTime()).format("YYYY-MM-DD HH:mm:ss"),
     };
   },
   computed: {
@@ -86,10 +85,14 @@ export default {
       remake: (state) => state.remake,
       orderType: (state) => state.orderType,
       merchantId: (state) => state.merchantId,
+      merchantInfo: (state) => state.merchantInfo,
     }),
-    isNotNulluserAddressInfo(){
-      return Object.keys(this.userAddressInfo).length > 0
-    }
+    isNotNulluserAddressInfo() {
+      return Object.keys(this.userAddressInfo).length > 0;
+    },
+  },
+  mounted() {
+    this.limitDistance();
   },
   methods: {
     ...mapActions(["setTotal", "setProduct", "setOrderType"]),
@@ -97,7 +100,6 @@ export default {
       uni.navigateTo({
         url: `/pages/orderConfirm/${path}`,
       });
-      console.log(1);
     },
     confirmTimePick(val) {
       this.show = false;
@@ -124,10 +126,8 @@ export default {
                   detailInfo: res.detailInfo,
                   telNumber: res.telNumber,
                 };
-                  that.$localStore.set("userAddressInfo", params);
-                  that.userAddressInfo = that.$localStore.get(
-                    "userAddressInfo"
-                  );
+                that.$localStore.set("userAddressInfo", params);
+                that.userAddressInfo = that.$localStore.get("userAddressInfo");
               },
               fail(e) {
                 console.log(e);
@@ -155,9 +155,10 @@ export default {
                     detailInfo: res.detailInfo,
                     telNumber: res.telNumber,
                   };
-                     that.$localStore.set("userAddressInfo", params);
-                    that.userAddressInfo = that.$localStore.get(
-                    "userAddressInfo")
+                  that.$localStore.set("userAddressInfo", params);
+                  that.userAddressInfo = that.$localStore.get(
+                    "userAddressInfo"
+                  );
                 },
                 fail(e) {
                   that.$toast("您取消了地址位置授权，请选择确定");
@@ -180,81 +181,106 @@ export default {
       }
       return uuid.join("");
     },
-    onSubmit() {
-      // 判断时间是否超出一个小时
-      this.currentDate = dayjs(this.currentDate).format("YYYY-MM-DD HH:mm:ss");
-      let isScheduled = dayjs(this.mealTime).diff(dayjs(this.currentDate),'hour') > 0
-      console.log('isScheduled', isScheduled)
-      this.loading = true;
-      this.setOrderType("takeAway");
-      let openid = this.$localStore.get("openid");
-      let {
-        merchantId,
-        userAddressInfo,
-        remake,
-        product,
-        orderType,
-        total,
-        mealTime
-      } = this;
-      let that = this;
-      // 获取所有的参数
+    // 根据用户选择的地址信息和商家的地址信息判断配送距离为多少，超出不让买单
+    limitDistance() {
+      const { userAddressInfo } = this;
+      const userAddress = `${userAddressInfo.provinceName}${userAddressInfo.cityName}${userAddressInfo.countyName}${userAddressInfo.detailInfo}`;
+      let limitDistance = this.merchantInfo.limitDistance;
       const params = {
-        openid,
-        merchantId,
-        userAddressInfo,
-        remake,
-        product,
-        orderType,
-        total,
-        mealTime,
-        isScheduled
+        userAddress: userAddress,
+        merchantAddress: this.merchantInfo.merchantAddress,
       };
-      let orderidUUID = that.uuid(32, 16);
-      let nonceStrUUID = that.uuid(32, 16);
-      console.log("uuid", orderidUUID);
-      let body = "贝克汉堡订单";
-      let money = total * 100;
-      // 调用云函数
-      wx.cloud.callFunction({
-        name: "pay",
-        data: {
-          body,
-          orderid: orderidUUID,
-          money,
-          nonceStr: nonceStrUUID,
-        },
-        success: async (res) => {
-          console.log("pay云函数调用成功", res);
-          let payResult = await that.pay(res.result);
-          if (payResult) {
-            console.log("支付成功的回调");
-            order(params).then((res) => {
-              console.log(res);
-              that.loading = false;
-              if (res.code === 0) {
-                uni.navigateTo({
-                  url: `/pages/orderResult/success?data=${encodeURIComponent(
-                    JSON.stringify(res.data)
-                  )}`,
-                });
-              } else {
-                uni.navigateTo({
-                  url: "/pages/orderResult/fail",
-                });
-              }
-            });
-          } else {
-            that.$toast("支付失败");
-            uni.navigateTo({
-              url: "/pages/orderResult/fail",
-            });
-          }
-        },
-        fail: (err) => {
-          console.error("[云函数] [login] 调用失败", err);
-        },
+      geocoding(params).then((res) => {
+        console.log(res.data);
+        if (this.merchantInfo.limitDistance * 1000 > res.data) {
+          return false;
+        } else {
+          return true;
+        }
       });
+    },
+    onSubmit() {
+      if (this.limitDistance()) {
+        // 判断时间是否超出一个小时
+        this.currentDate = dayjs(this.currentDate).format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        let isScheduled =
+          dayjs(this.mealTime).diff(dayjs(this.currentDate), "hour") > 0;
+        console.log("isScheduled", isScheduled);
+        this.loading = true;
+        this.setOrderType("takeAway");
+        let openid = this.$localStore.get("openid");
+        let {
+          merchantId,
+          userAddressInfo,
+          remake,
+          product,
+          orderType,
+          total,
+          mealTime,
+        } = this;
+        let that = this;
+        // 获取所有的参数
+        const params = {
+          openid,
+          merchantId,
+          userAddressInfo,
+          remake,
+          product,
+          orderType,
+          total,
+          mealTime,
+          isScheduled,
+        };
+        let orderidUUID = that.uuid(32, 16);
+        let nonceStrUUID = that.uuid(32, 16);
+        console.log("uuid", orderidUUID);
+        let body = "贝克汉堡订单";
+        let money = total * 100;
+        // 调用云函数
+        wx.cloud.callFunction({
+          name: "pay",
+          data: {
+            body,
+            orderid: orderidUUID,
+            money,
+            nonceStr: nonceStrUUID,
+          },
+          success: async (res) => {
+            console.log("pay云函数调用成功", res);
+            let payResult = await that.pay(res.result);
+            if (payResult) {
+              console.log("支付成功的回调");
+              order(params).then((res) => {
+                console.log(res);
+                that.loading = false;
+                if (res.code === 0) {
+                  uni.navigateTo({
+                    url: `/pages/orderResult/success?data=${encodeURIComponent(
+                      JSON.stringify(res.data)
+                    )}`,
+                  });
+                } else {
+                  uni.navigateTo({
+                    url: "/pages/orderResult/fail",
+                  });
+                }
+              });
+            } else {
+              that.$toast("支付失败");
+              uni.navigateTo({
+                url: "/pages/orderResult/fail",
+              });
+            }
+          },
+          fail: (err) => {
+            console.error("[云函数] [login] 调用失败", err);
+          },
+        });
+      } else {
+        this.$toast("您所选的位置距离商家太远了，请重新选择");
+      }
     },
     pay(payData) {
       //实现小程序支付

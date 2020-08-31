@@ -54,3 +54,13 @@ export const allOrder = (data) => {
 	})
 }
 
+// 根据地区名字转ip 地址 然后直接获得两点之间的距离
+export const geocoding = (data) => {
+	return http.request({
+		url: '/user/geocoding',
+		data,
+		method: 'get'
+	})
+}
+
+

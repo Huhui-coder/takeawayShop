@@ -16,7 +16,7 @@
       <van-submit-bar
         :price="total * 100"
         button-text="提交订单"
-        :disabled="total === 0"
+        :disabled="total === 0 || total < merchantInfo.limitPrice"
         @submit="onSubmit"
         custom-class="van-submit-bar"
       >
@@ -28,6 +28,7 @@
             @click="onClickCart"
           />
         </view>
+        <view slot="tip">起送价为￥{{merchantInfo.limitPrice}}</view>
       </van-submit-bar>
       <div class="cart-wrap" :class="[showCart ? 'show' : 'hidden']">
         <div class="content-wrap">
@@ -61,7 +62,7 @@ export default {
     items: {
       type: Array,
       required: true,
-    },
+    }
   },
   data() {
     return {
@@ -87,6 +88,7 @@ export default {
       isAllSelect: (state) => state.isAllSelect,
       total: (state) => state.total,
       product: (state) => state.product,
+      merchantInfo: (state) => state.merchantInfo,
     }),
   },
   mounted() {},
