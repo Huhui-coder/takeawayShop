@@ -28,7 +28,7 @@
             @click="onClickCart"
           />
         </view>
-        <view slot="tip">起送价为￥{{merchantInfo.limitPrice}}</view>
+        <view slot="tip">起送价为￥{{merchantInfo.limitPrice}}(免配送费)</view>
       </van-submit-bar>
       <div class="cart-wrap" :class="[showCart ? 'show' : 'hidden']">
         <div class="content-wrap">

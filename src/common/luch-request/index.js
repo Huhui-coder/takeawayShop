@@ -37,7 +37,6 @@ const localLogout = (res) => {
 
 http.interceptor.request(config => {
   store.dispatch('setLoading', true)
-  console.log(store.state.showLoading)
 	config.header['ncov-access-token'] = localStore.get('ncov-access-token') || ''
 	return config
 }, error => {
@@ -47,7 +46,6 @@ http.interceptor.request(config => {
 http.interceptor.response(
   res => {
     store.dispatch('setLoading', false)
-    console.log(store.state.showLoading)
     if (res.statusCode === 403) return localLogout.call(res)
     if (res.statusCode === 204) return res // 获取验证码无返回 退出登录成功
 	  if (['application/octet-stream', 'image/png', 'image/bmp'].includes(res.header['Content-Type'] || res.header['content-type'])) {
@@ -55,7 +53,6 @@ http.interceptor.response(
 	  }
     const {code, msg} = res.data
     if (code !== 200 && code !== 0 && code !== 204) {
-      console.log('http request res data code error')
       uni.showToast({
         icon: 'none',
         title: msg

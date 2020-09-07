@@ -9,8 +9,6 @@ const db = cloud.database()
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  console.log('支付回调')
-  console.log(event)
   console.log(cloud.getWXContext().ENV)
   const orderId = event.outTradeNo
   const resultCode = event.resultCode

@@ -4,7 +4,6 @@ cloud.init({
 })
 
 exports.main = async (event, context) => {    
-  console.log(event)
 const res = await cloud.cloudPay.unifiedOrder({
     "body" : event.body,
     "outTradeNo" : event.orderid,

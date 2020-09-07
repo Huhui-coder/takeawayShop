@@ -91,9 +91,6 @@ export default {
       return Object.keys(this.userAddressInfo).length > 0;
     },
   },
-  mounted() {
-    this.limitDistance();
-  },
   methods: {
     ...mapActions(["setTotal", "setProduct", "setOrderType"]),
     go(path) {
@@ -181,26 +178,35 @@ export default {
       }
       return uuid.join("");
     },
+    // 判断用户填写的资料是否完整
+    isInfoFull () {
+      console.log(this.userAddressInfo)
+    },
     // 根据用户选择的地址信息和商家的地址信息判断配送距离为多少，超出不让买单
     limitDistance() {
-      const { userAddressInfo } = this;
-      const userAddress = `${userAddressInfo.provinceName}${userAddressInfo.cityName}${userAddressInfo.countyName}${userAddressInfo.detailInfo}`;
-      let limitDistance = this.merchantInfo.limitDistance;
-      const params = {
-        userAddress: userAddress,
-        merchantAddress: this.merchantInfo.merchantAddress,
-      };
-      geocoding(params).then((res) => {
-        console.log(res.data);
-        if (this.merchantInfo.limitDistance * 1000 > res.data) {
-          return false;
-        } else {
-          return true;
-        }
+      return new Promise((resolve, reject) => {
+        const { userAddressInfo } = this;
+        const userAddress = `${userAddressInfo.provinceName}${userAddressInfo.cityName}${userAddressInfo.countyName}${userAddressInfo.detailInfo}`;
+        let limitDistance = this.merchantInfo.limitDistance;
+        const params = {
+          userAddress: userAddress,
+          merchantAddress: this.merchantInfo.merchantAddress,
+        };
+        geocoding(params).then((res) => {
+          console.log(this.merchantInfo.limitDistance * 1000)
+          console.log(res.data)
+          if (this.merchantInfo.limitDistance * 1000 > Number(res.data)) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        });
       });
     },
-    onSubmit() {
-      if (this.limitDistance()) {
+    async onSubmit() {
+      isInfoFull()
+      let result = await this.limitDistance()
+      if (result) {
         // 判断时间是否超出一个小时
         this.currentDate = dayjs(this.currentDate).format(
           "YYYY-MM-DD HH:mm:ss"

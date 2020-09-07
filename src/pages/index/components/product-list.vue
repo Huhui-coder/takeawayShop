@@ -16,7 +16,7 @@
             :id="p._id"
             @change="checkBoxChange"
           />
-          <div class="left" @click="showProductModal(p)">
+          <div class="left" @tap="showProductModal(p)">
             <div class="img">
               <image class="img" mode="scaleToFill" :lazy-load="true" :src="p.url"></image>
             </div>
@@ -114,6 +114,7 @@ export default {
     items: {
       handler(value) {
         this.productList = value;
+        console.log('productList', this.productList)
       },
       immediate: true,
       deep: true,
@@ -215,7 +216,7 @@ export default {
 .content {
   .product-wrap {
     background-color: white;
-    margin-bottom: 30upx;
+    margin-bottom: 100upx;
     .list-wrap {
       background-color: white;
       .type-name {
@@ -225,6 +226,7 @@ export default {
       .list {
         display: flex;
         align-items: center;
+        margin: 20rpx 0;
         .left {
           .img {
             width: 250upx;
