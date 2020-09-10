@@ -16,6 +16,7 @@
       <van-submit-bar
         :price="total * 100"
         button-text="提交订单"
+        :loading="loading"
         :disabled="total === 0 || total < merchantInfo.limitPrice"
         @submit="onSubmit"
         custom-class="van-submit-bar"
@@ -66,6 +67,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       mainActiveIndex: 0,
       currentItems: [],
       showCart: false,
@@ -131,9 +133,11 @@ export default {
       }
     },
     onSubmit() {
+      this.loading = true
       uni.navigateTo({
         url: "/pages/orderConfirm/index",
       });
+      this.loading = false
     },
   },
 };

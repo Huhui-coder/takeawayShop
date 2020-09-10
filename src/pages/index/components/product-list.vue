@@ -16,9 +16,9 @@
             :id="p._id"
             @change="checkBoxChange"
           />
-          <div class="left" @tap="showProductModal(p)">
-            <div class="img">
-              <image class="img" mode="scaleToFill" :lazy-load="true" :src="p.url"></image>
+          <div class="left">
+            <div class="img" @tap="showProductModal(p)">
+              <image class="img" mode="scaleToFill" lazy-load :src="p.url"></image>
             </div>
           </div>
           <div class="right">
@@ -51,10 +51,18 @@
   @close="onClose"
   @confirm="onClose"
 >
-  <image v-if="currentProduct.url" :src="currentProduct.url" />
-  <span>{{currentProduct.desc}}</span>
+  <image :src="currentProduct.url" />
+  <p style="text-align:center">{{currentProduct.desc}}</p>
 </van-dialog>
 
+<!-- <van-overlay :show="showDialog" @click="onClose">
+        <view class="wrapper">
+          <view class="content">
+          <image :src="currentProduct.url" />
+          <p style="text-align:center">{{currentProduct.desc}}</p>
+          </view>
+        </view>
+      </van-overlay> -->
   </div>
 </template>
 
@@ -124,7 +132,6 @@ export default {
     ...mapActions(["setTotal", "setProduct"]),
     onClose(){
       this.showDialog = false
-      this.currentProduct = {}
     },
     VerticalMain(e){
       let that = this;
@@ -192,9 +199,8 @@ export default {
       }
     },
     showProductModal(v) {
-      this.showDialog = true
       this.currentProduct = v
-      console.log(v)
+      this.showDialog = true
     },
     onChange(value) {
       let id = value.currentTarget.id;
@@ -213,6 +219,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  .content{
+    background-color: #fff;
+    padding: 40rpx;
+    border: 1px solid #fff;
+    border-radius: 33px;
+    width: 640rpx;
+    image {
+    width: 640rpx;
+    height: 480rpx;
+    display: inline-block;
+    overflow: hidden;
+}
+  }
+}
 .content {
   .product-wrap {
     background-color: white;
@@ -228,6 +254,7 @@ export default {
         align-items: center;
         margin: 20rpx 0;
         .left {
+          margin-left: 20rpx;
           .img {
             width: 250upx;
             height: 150upx;

@@ -104,12 +104,9 @@ export default {
           nonceStr: nonceStrUUID,
         },
         success: async (res) => {
-          console.log("pay云函数调用成功", res);
           let payResult = await that.pay(res.result);
           if (payResult) {
-            console.log("支付成功的回调");
             order(params).then((res) => {
-              console.log(res);
               that.loading = false;
               if (res.code === 0) {
                 uni.navigateTo({
@@ -163,6 +160,7 @@ export default {
 .content {
   position: relative;
   width: 90vw;
+  height: 100vh;
   margin: 0 auto;
   padding-top: 30upx;
 
@@ -212,9 +210,7 @@ export default {
     }
   }
   .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
+    position: relative;
   }
 }
 </style>

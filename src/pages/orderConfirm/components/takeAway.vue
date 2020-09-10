@@ -29,6 +29,7 @@
         <van-datetime-picker
           type="datetime"
           :value="currentDate"
+          :min-date="currentDate"
           @cancel="show = false"
           @confirm="confirmTimePick"
         />
@@ -178,10 +179,6 @@ export default {
       }
       return uuid.join("");
     },
-    // 判断用户填写的资料是否完整
-    isInfoFull () {
-      console.log(this.userAddressInfo)
-    },
     // 根据用户选择的地址信息和商家的地址信息判断配送距离为多少，超出不让买单
     limitDistance() {
       return new Promise((resolve, reject) => {
@@ -193,8 +190,6 @@ export default {
           merchantAddress: this.merchantInfo.merchantAddress,
         };
         geocoding(params).then((res) => {
-          console.log(this.merchantInfo.limitDistance * 1000)
-          console.log(res.data)
           if (this.merchantInfo.limitDistance * 1000 > Number(res.data)) {
             resolve(true);
           } else {
@@ -204,7 +199,6 @@ export default {
       });
     },
     async onSubmit() {
-      isInfoFull()
       let result = await this.limitDistance()
       if (result) {
         // 判断时间是否超出一个小时
@@ -254,10 +248,8 @@ export default {
             nonceStr: nonceStrUUID,
           },
           success: async (res) => {
-            console.log("pay云函数调用成功", res);
             let payResult = await that.pay(res.result);
             if (payResult) {
-              console.log("支付成功的回调");
               order(params).then((res) => {
                 console.log(res);
                 that.loading = false;
@@ -317,6 +309,7 @@ export default {
   position: relative;
   width: 90vw;
   margin: 0 auto;
+  height: 100vh;
   padding-top: 30upx;
   .main {
     button {
@@ -364,9 +357,7 @@ export default {
     }
   }
   .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
+    position: relative;
   }
 }
 </style>

@@ -6,6 +6,7 @@
         <van-datetime-picker
           type="datetime"
           :value="currentDate"
+          :min-date="currentDate"
           @cancel="show = false"
           @confirm="confirmTimePick"
         />
@@ -95,7 +96,6 @@ export default {
       // 判断时间是否超出一个小时
       this.currentDate = dayjs(this.currentDate).format("YYYY-MM-DD HH:mm:ss");
       let isScheduled = dayjs(this.mealTime).diff(dayjs(this.currentDate),'hour') > 0
-      console.log('isScheduled', isScheduled)
       this.loading = true;
       this.setOrderType("selfTake");
       let openid = this.$localStore.get("openid");
@@ -123,7 +123,6 @@ export default {
       };
       let orderidUUID = that.uuid(32, 16);
       let nonceStrUUID = that.uuid(32, 16);
-      console.log("uuid", orderidUUID);
       let body = "贝克汉堡订单";
       let money = total * 100;
       // 调用云函数
@@ -136,12 +135,9 @@ export default {
           nonceStr: nonceStrUUID,
         },
         success: async (res) => {
-          console.log("pay云函数调用成功", res);
           let payResult = await that.pay(res.result);
           if (payResult) {
-            console.log("支付成功的回调");
             order(params).then((res) => {
-              console.log(res);
               that.loading = false;
               if (res.code === 0) {
                 uni.navigateTo({
@@ -196,6 +192,7 @@ export default {
   position: relative;
   width: 90vw;
   margin: 0 auto;
+  height: 100vh;
   padding-top: 30upx;
 
   .main {
@@ -244,9 +241,7 @@ export default {
     }
   }
   .footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
+    position: relative;
   }
 }
 </style>
