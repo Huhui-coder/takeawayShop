@@ -1,4 +1,9 @@
 <template>
+<skeleton
+  :loading="skeletonLoading"
+  :row="skeleton.row"
+  :showTitle="skeleton.showTitle"
+>
   <view class="content">
     <view class="merchant-wrap">
       <view class="desc">
@@ -53,6 +58,7 @@
       </van-overlay>
     </view>
   </view>
+</skeleton>
 </template>
 
 <script>
@@ -60,14 +66,21 @@ import { login, preLogin } from "../../common/api";
 import order from "./components/order";
 import list from "./components/list";
 import { mapState, mapActions } from "vuex";
+import Skeleton from '@/components/skeleton'
 
 export default {
   components: {
     order,
-    list
+    list,
+    Skeleton
   },
   data() {
     return {
+      skeletonLoading: false,
+      skeleton : {
+        row: 13,
+        showTitle: true,
+      },
       productItems: [],
       merchantInfo: {
         status: true,
@@ -76,10 +89,13 @@ export default {
     };
   },
   mounted() {
+    // this.setMerchantId("5f45edfacc91256a4856ae6f");
+    // this.login();
+  },
+  onLoad() {
     this.setMerchantId("5f45edfacc91256a4856ae6f");
     this.login();
   },
-  onLoad() {},
   computed: {
     ...mapState({
       merchantId: (state) => state.merchantId,
@@ -100,6 +116,7 @@ export default {
     },
     login() {
       let that = this;
+      that.skeletonLoading = true
       wx.login({
         success: (res) => {
           console.log("用户的code：" + res.code);
@@ -145,6 +162,7 @@ export default {
               };
               nData.reduce(reducer, []);
               that.productItems = newArray;
+              that.skeletonLoading = false
             });
           });
         },

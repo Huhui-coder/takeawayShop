@@ -26,9 +26,6 @@ const localLogout = (res) => {
     icon: 'none',
     title: '登录过期，请重新登录！'
   });
-  // 清除server 存的 code 403 server没清
-  localStore.remove('ncov-user-info')
-	localStore.remove('ncov-access-token')
 	uni.reLaunch({
 		url: `/pages/login/login`
 	})
@@ -36,8 +33,6 @@ const localLogout = (res) => {
 }
 
 http.interceptor.request(config => {
-  store.dispatch('setLoading', true)
-	config.header['ncov-access-token'] = localStore.get('ncov-access-token') || ''
 	return config
 }, error => {
 	return Promise.reject(error)
@@ -45,7 +40,6 @@ http.interceptor.request(config => {
 
 http.interceptor.response(
   res => {
-    store.dispatch('setLoading', false)
     if (res.statusCode === 403) return localLogout.call(res)
     if (res.statusCode === 204) return res // 获取验证码无返回 退出登录成功
 	  if (['application/octet-stream', 'image/png', 'image/bmp'].includes(res.header['Content-Type'] || res.header['content-type'])) {

@@ -1,68 +1,72 @@
 <template>
-  <div class="container">
-    <div class="info">
-      {{ infoFormat(orderData.status) }}
-      <div class="merchantInfo">
-        <span>店铺：{{ merchantInfo.shopName }}</span>
-        商家电话：
-        <span @click="phone(merchantInfo.merchantPhone)">{{
-          merchantInfo.merchantPhone
-        }}</span>
+  <div>
+    <loading :loading="show"/>
+    <div class="container" v-if="!show">
+      <div class="info">
+        {{ infoFormat(orderData.status) }}
+        <div class="merchantInfo">
+          <span>店铺：{{ merchantInfo.shopName }}</span>
+          商家电话：
+          <span @click="phone(merchantInfo.merchantPhone)">{{
+            merchantInfo.merchantPhone
+          }}</span>
+        </div>
       </div>
-    </div>
-    <div class="order-info">
-      <div class="numbering">
-        <span class="text">
-          订单编号:
-          {{ orderData.numbering }}
-        </span>
-        <van-tag color="#f2826a" plain>{{
-              orderTypeInfo(orderData.orderType)
-            }}</van-tag>
-      </div>
-      <div class="addressInfo" v-if="orderData.orderType === 'takeAway'">
-        <p>收货地址</p>
-        <p v-html="addressFormat(orderData.userAddressInfo)"></p>
-      </div>
-      <div class="addressInfo" v-if="!orderData.orderType === 'dine'">
-        <p>取餐时间</p>
-        <p>{{ orderData.mealTime }}</p>
-      </div>
+      <div class="order-info">
+        <div class="numbering">
+          <span class="text">
+            订单编号:
+            {{ orderData.numbering }}
+          </span>
+          <van-tag color="#f2826a" plain>{{
+            orderTypeInfo(orderData.orderType)
+          }}</van-tag>
+        </div>
+        <div class="addressInfo" v-if="orderData.orderType === 'takeAway'">
+          <p>收货地址</p>
+          <p v-html="addressFormat(orderData.userAddressInfo)"></p>
+        </div>
+        <div class="addressInfo" v-if="!orderData.orderType === 'dine'">
+          <p>取餐时间</p>
+          <p>{{ orderData.mealTime }}</p>
+        </div>
 
-      <div class="productInfo">
-        <p>共{{ orderData.product.length }}件商品</p>
-        <div class="p-wrap" v-for="item in orderData.product" :key="item._id">
-          <div class="name">{{ item.name }}</div>
-          <div class="num">x{{ item.num }}</div>
-          <div class="price">￥{{ item.price }}</div>
+        <div class="productInfo">
+          <p>共{{ orderData.product.length }}件商品</p>
+          <div class="p-wrap" v-for="item in orderData.product" :key="item._id">
+            <div class="name">{{ item.name }}</div>
+            <div class="num">x{{ item.num }}</div>
+            <div class="price">￥{{ item.price }}</div>
+          </div>
+          <van-divider />
+          <p class="total">
+            总计:<span class="moeny"> {{ orderData.total }}</span>
+          </p>
         </div>
-        <van-divider />
-        <p class="total">
-          总计:<span class="moeny"> {{ orderData.total }}</span>
-        </p>
-      </div>
-      <div class="orderInfo">
-        <p>订单详情</p>
-        <div>
-          <span class="gray-text">订单编号</span>
-          <span>{{ orderData._id }}</span>
-        </div>
-        <div>
-          <span class="gray-text">订单时间</span>
-          <span>{{ formatTime(orderData.create_time) }}</span>
+        <div class="orderInfo">
+          <p>订单详情</p>
+          <div>
+            <span class="gray-text">订单编号</span>
+            <span>{{ orderData._id }}</span>
+          </div>
+          <div>
+            <span class="gray-text">订单时间</span>
+            <span>{{ formatTime(orderData.create_time) }}</span>
+          </div>
         </div>
       </div>
     </div>
-    <loading/>
   </div>
 </template>
 
 <script>
 import { singleOrder } from "../../../common/api";
+import { mapState } from "vuex";
 
 export default {
   data() {
     return {
+      show: true,
       id: "",
       orderData: {},
       merchantInfo: {},
@@ -72,13 +76,18 @@ export default {
     let data = option.id;
     this.id = data;
     let that = this;
-        singleOrder({ _id: this.id }).then((res) => {
+    that.show = true
+    singleOrder({ _id: this.id }).then((res) => {
       if (res.code === 0) {
         that.orderData = res.data;
         that.merchantInfo = res.merchantInfo;
+        that.show = false
       }
-    }); 
+    });
   },
+  ...mapState({
+    showLoading: (state) => state.showLoading,
+  }),
   methods: {
     orderTypeInfo(data) {
       let mapper = {

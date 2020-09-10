@@ -1,5 +1,7 @@
 <template>
-  <div class="content">
+<div>
+  <loading :loading="show"/>
+  <div class="content" v-if="!show">
     <div class="tabs">
       <van-tabs type="card" tab-class="tab-content">
         <van-tab title="外送服务" class="tab-content">
@@ -14,6 +16,7 @@
       </van-tabs>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -27,8 +30,13 @@ export default {
     dine
   },
   data() {
-    return {};
+    return {
+      show: true,
+    };
   },
+  mounted() {
+    this.show = false
+  }
 };
 </script>
 

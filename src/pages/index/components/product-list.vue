@@ -8,54 +8,64 @@
         :scroll-into-view="mainCur"
         @scroll="VerticalMain"
       >
-      <div class="list-wrap" v-for="(item, index) in productList" :key="index" :id="'item_' + index">
-        <p class="type-name">{{ item.text }}</p>
-        <div class="list" v-for="p in item.children" :key="p._id">
-          <van-checkbox
-            :value="p.checked"
-            :id="p._id"
-            @change="checkBoxChange"
-          />
-          <div class="left">
-            <div class="img" @tap="showProductModal(p)">
-              <image class="img" mode="scaleToFill" lazy-load :src="p.url"></image>
+        <div
+          class="list-wrap"
+          v-for="(item, index) in productList"
+          :key="index"
+          :id="'item_' + index"
+        >
+          <p class="type-name">{{ item.text }}</p>
+          <div class="list" v-for="p in item.children" :key="p._id">
+            <van-checkbox
+              :value="p.checked"
+              :id="p._id"
+              @change="checkBoxChange"
+            />
+            <div class="left">
+              <div class="img" @tap="showProductModal(p)">
+                <image
+                  class="img"
+                  mode="scaleToFill"
+                  lazy-load
+                  :src="p.url"
+                ></image>
+              </div>
             </div>
-          </div>
-          <div class="right">
-            <div class="text">
-              <p class="name">{{ p.name }}</p>
-              <p class="desc">{{ p.desc }}</p>
-              <p class="price">￥{{ p.price }}</p>
-            </div>
-            <div class="step">
-              <van-stepper
-                :id="p._id"
-                :value="p.num"
-                @change="onChange"
-                min="1"
-                max="99"
-                integer
-              />
+            <div class="right">
+              <div class="text">
+                <p class="name">{{ p.name }}</p>
+                <p class="desc">{{ p.desc }}</p>
+                <p class="price">￥{{ p.price }}</p>
+              </div>
+              <div class="step">
+                <van-stepper
+                  :id="p._id"
+                  :value="p.num"
+                  @change="onChange"
+                  min="1"
+                  max="99"
+                  integer
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
       </scroll-view>
     </div>
 
     <!-- 单个商品展示详情-->
-  <van-dialog
-  use-slot
-  :title="currentProduct.name"
-  :show="showDialog"
-  @close="onClose"
-  @confirm="onClose"
->
-  <image :src="currentProduct.url" />
-  <p style="text-align:center">{{currentProduct.desc}}</p>
-</van-dialog>
+    <van-dialog
+      use-slot
+      :title="currentProduct.name"
+      :show="showDialog"
+      @close="onClose"
+      @confirm="onClose"
+    >
+      <image :src="currentProduct.url" />
+      <p style="text-align:center">{{ currentProduct.desc }}</p>
+    </van-dialog>
 
-<!-- <van-overlay :show="showDialog" @click="onClose">
+    <!-- <van-overlay :show="showDialog" @click="onClose">
         <view class="wrapper">
           <view class="content">
           <image :src="currentProduct.url" />
@@ -76,8 +86,8 @@ export default {
     },
     mainCur: {
       type: String,
-      default: 'item_' + 0
-    }
+      default: "item_" + 0,
+    },
   },
   data() {
     return {
@@ -86,7 +96,7 @@ export default {
       itemsList: [],
       productList: [],
       currentId: 0,
-      load: true
+      load: true,
     };
   },
   mounted() {},
@@ -113,7 +123,7 @@ export default {
           }
         }
         this.setProduct(chooseProduct);
-        console.log(total)
+        console.log(total);
         this.setTotal(total);
       },
       deep: true,
@@ -122,7 +132,7 @@ export default {
     items: {
       handler(value) {
         this.productList = value;
-        console.log('productList', this.productList)
+        console.log("productList", this.productList);
       },
       immediate: true,
       deep: true,
@@ -130,17 +140,18 @@ export default {
   },
   methods: {
     ...mapActions(["setTotal", "setProduct"]),
-    onClose(){
-      this.showDialog = false
+    onClose() {
+      this.showDialog = false;
     },
-    VerticalMain(e){
+    VerticalMain(e) {
       let that = this;
       let tabHeight = 0;
       if (this.load) {
         for (let i = 0; i < this.productList.length; i++) {
           let view = uni
-            .createSelectorQuery().in(this)
-            .select("#item_" +i);
+            .createSelectorQuery()
+            .in(this)
+            .select("#item_" + i);
           view
             .fields(
               {
@@ -158,16 +169,18 @@ export default {
       }
       let scrollTop = e.detail.scrollTop + 10;
       for (let i = 0; i < this.productList.length; i++) {
-        if (scrollTop > this.productList[i].top && scrollTop < this.productList[i].bottom) {
+        if (
+          scrollTop > this.productList[i].top &&
+          scrollTop < this.productList[i].bottom
+        ) {
           this.verticalNavTop = (i - 1) * 50;
           this.tabCur = i;
-          this.$emit('scroll-update', i)
+          this.$emit("scroll-update", i);
           return false;
         }
       }
     },
-    fetch() {
-    },
+    fetch() {},
     addNumByKey(objArray, property) {
       var array = [];
       return objArray.reduce((acc, obj, idx, arr) => {
@@ -180,12 +193,12 @@ export default {
         return acc;
       }, []);
     },
-    emptyAllProduct(){
+    emptyAllProduct() {
       for (let item of this.productList) {
-          for (let p of item.children) {
-            p.checked = false
-          }
+        for (let p of item.children) {
+          p.checked = false;
         }
+      }
     },
     checkBoxChange(value) {
       let id = value.currentTarget.id;
@@ -199,8 +212,8 @@ export default {
       }
     },
     showProductModal(v) {
-      this.currentProduct = v
-      this.showDialog = true
+      this.currentProduct = v;
+      this.showDialog = true;
     },
     onChange(value) {
       let id = value.currentTarget.id;
@@ -225,18 +238,18 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  .content{
+  .content {
     background-color: #fff;
     padding: 40rpx;
     border: 1px solid #fff;
     border-radius: 33px;
     width: 640rpx;
     image {
-    width: 640rpx;
-    height: 480rpx;
-    display: inline-block;
-    overflow: hidden;
-}
+      width: 640rpx;
+      height: 480rpx;
+      display: inline-block;
+      overflow: hidden;
+    }
   }
 }
 .content {
@@ -268,9 +281,9 @@ export default {
           flex: 1;
           .text {
             width: 105px;
-            white-space: nowrap; 
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow:ellipsis;
+            text-overflow: ellipsis;
             .name {
               color: black;
               font-size: 15px;

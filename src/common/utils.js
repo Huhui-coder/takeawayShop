@@ -61,3 +61,23 @@ export const getQueryStringArgs = (qs) => {
 
 	return args;
 }
+// 节流
+export function throttle(callback, wait = 3000) {
+    let timer = null;
+    let startTime;
+    return function () {
+        const ctx = this;
+        const args = arguments;
+        const now = +new Date();
+        if (startTime && now < startTime + wait) {
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+                startTime = now;
+                callback.apply(ctx, args);
+            }, wait);
+        } else {
+            startTime = now;
+            callback.apply(ctx, args);
+        }
+    }
+}

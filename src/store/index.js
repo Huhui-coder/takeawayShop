@@ -14,7 +14,6 @@ export default new Vuex.Store({
         remake: '',
         orderType: '',
         merchantId:'',
-        showLoading: false,
         merchantInfo: {}
     },
     getters: {},
@@ -39,9 +38,6 @@ export default new Vuex.Store({
         },
         updateMerchantId(state, data) {
             state.merchantId = data
-        },
-        updateLoading(state, data) {
-            state.showLoading = data
         },
         updateMerchantInfo(state, data) {
             state.merchantInfo = data
