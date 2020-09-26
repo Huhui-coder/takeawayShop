@@ -31,7 +31,7 @@
                 ></image>
               </div>
             </div>
-            <div class="right">
+            <div class="right" @tap="toggleProduct(p._id)">
               <div class="text">
                 <p class="name">{{ p.name }}</p>
                 <p class="desc">{{ p.desc }}</p>
@@ -201,7 +201,18 @@ export default {
       }
     },
     checkBoxChange(value) {
+      console.log(value)
       let id = value.currentTarget.id;
+      let { productList } = this;
+      for (let item of productList) {
+        for (let p of item.children) {
+          if (p._id == id) {
+            p.checked = !p.checked;
+          }
+        }
+      }
+    },
+    toggleProduct (id) {
       let { productList } = this;
       for (let item of productList) {
         for (let p of item.children) {

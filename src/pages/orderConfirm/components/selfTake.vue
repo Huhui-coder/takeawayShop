@@ -135,8 +135,9 @@ export default {
           nonceStr: nonceStrUUID,
         },
         success: async (res) => {
-          let payResult = await that.pay(res.result);
-          if (payResult) {
+          await that.pay(res.result);
+          let queryResult = await that.queryOrder(orderidUUID, nonceStrUUID);
+          if (queryResult) {
             order(params).then((res) => {
               that.loading = false;
               if (res.code === 0) {
@@ -171,13 +172,32 @@ export default {
         wx.requestPayment({
           ...payment, //。。。是展开变量的语法
           success(res) {
-            console.log("pay success", res);
-            //跳转到支付成功页面
+            that.loading = false
             resolve(true);
           },
           fail(res) {
-            console.error("pay fail", res);
+            that.loading = false
             //跳转到支付失败页面
+            resolve(false);
+          },
+        });
+      });
+    },
+    queryOrder(id, str) {
+      return new Promise((resolve, reject) => {
+        wx.cloud.callFunction({
+          name: "query_order",
+          data: {
+            orderid: id,
+            nonceStr: str,
+          },
+          success: (res) => {
+            if (res.result.tradeState === 'SUCCESS') {
+            resolve(true);
+            }
+          },
+          fail: (err) => {
+            console.error("[云函数] [quer_order] 调用失败", err);
             resolve(false);
           },
         });
