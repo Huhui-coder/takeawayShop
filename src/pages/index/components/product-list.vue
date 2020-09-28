@@ -35,9 +35,9 @@
               <div class="text">
                 <p class="name">{{ p.name }}</p>
                 <p class="desc">{{ p.desc }}</p>
-                <p class="price">￥{{ p.price }}</p>
               </div>
               <div class="step">
+                <p class="price">￥{{ p.price }}</p>
                 <van-stepper
                   :id="p._id"
                   :value="p.num"
@@ -64,15 +64,6 @@
       <image :src="currentProduct.url" />
       <p style="text-align:center">{{ currentProduct.desc }}</p>
     </van-dialog>
-
-    <!-- <van-overlay :show="showDialog" @click="onClose">
-        <view class="wrapper">
-          <view class="content">
-          <image :src="currentProduct.url" />
-          <p style="text-align:center">{{currentProduct.desc}}</p>
-          </view>
-        </view>
-      </van-overlay> -->
   </div>
 </template>
 
@@ -243,26 +234,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  .content {
-    background-color: #fff;
-    padding: 40rpx;
-    border: 1px solid #fff;
-    border-radius: 33px;
-    width: 640rpx;
-    image {
-      width: 640rpx;
-      height: 480rpx;
-      display: inline-block;
-      overflow: hidden;
-    }
-  }
-}
 .content {
   .product-wrap {
     background-color: white;
@@ -271,44 +242,59 @@ export default {
       background-color: white;
       .type-name {
         font-size: 13px;
-        margin: 20upx 0;
+        margin-bottom: 10upx;
       }
       .list {
         display: flex;
         align-items: center;
-        margin: 20rpx 0;
+        margin-bottom: 10rpx;
         .left {
           margin-left: 20rpx;
           .img {
-            width: 250upx;
-            height: 150upx;
+            width: 180upx;
+            height: 180upx;
+            border-radius: 10px;
           }
           img {
-            width: 250upx;
-            height: 150upx;
+            width: 180upx;
+            height: 180upx;
           }
         }
         .right {
           flex: 1;
+          margin-left: 20upx;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
           .text {
-            width: 105px;
+            width: 160px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             .name {
               color: black;
-              font-size: 15px;
+              font-size: 17px;
+              font-weight: bolder;
+              margin-bottom:20upx;
+
             }
             .desc {
               color: black;
-              font-size: 14px;
+              font-size: 12px;
+              height: 17px;
+              align-items: baseline;
+              margin-bottom:20upx;
             }
-            .price {
-              color: red;
-              font-size: 13px;
-            }
+           
           }
           .step {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+             .price {
+              color: red;
+              font-size: 16px;
+            }
           }
         }
       }

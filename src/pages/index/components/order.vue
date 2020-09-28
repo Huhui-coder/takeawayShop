@@ -3,13 +3,15 @@
     <div class="main">
       <van-tree-select
         class="main-item"
+        main-item-class="mainItemClass"
         :main-active-index="mainActiveIndex"
+        content-item-class="contentItemClass"
         :items="items"
         height="77vh"
         @click-nav="onClickNav"
         @click-item="onClickItem"
       >
-        <productList slot="content" :items="currentItems" ref="productList" :mainCur="mainCur" @scroll-update="scrollUpdate"/>
+        <productList style="width:300px" slot="content" :items="currentItems" ref="productList" :mainCur="mainCur" @scroll-update="scrollUpdate"/>
       </van-tree-select>
     </div>
     <div class="footer">
@@ -142,6 +144,11 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+.contentItemClass{
+  width: 491upx !important;
+}
+</style>
 
 <style lang="scss" scoped>
 .content {

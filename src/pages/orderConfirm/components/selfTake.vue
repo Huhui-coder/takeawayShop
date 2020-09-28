@@ -135,8 +135,10 @@ export default {
           nonceStr: nonceStrUUID,
         },
         success: async (res) => {
-          await that.pay(res.result);
+          that.pay(res.result);
+          setTimeout(() => {
           let queryResult = await that.queryOrder(orderidUUID, nonceStrUUID);
+          }, 300);
           if (queryResult) {
             order(params).then((res) => {
               that.loading = false;
