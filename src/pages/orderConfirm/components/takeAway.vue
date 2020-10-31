@@ -16,9 +16,7 @@
                 <span class="phone">{{ userAddressInfo.telNumber }}</span>
               </p>
             </div>
-            <div v-else>
-              暂无地址请先选择
-            </div>
+            <div v-else>暂无地址请先选择</div>
           </div>
           <van-icon name="plus" />
         </div>
@@ -65,7 +63,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { order, geocoding } from "../../../common/api";
+import { order, geocoding, orderInfo } from "../../../common/api";
 import dayjs from "dayjs";
 
 export default {
@@ -139,7 +137,7 @@ export default {
                 success(res) {
                   console.log(res.authSetting);
                 },
-              });
+              })
             } else {
               // 第一次打开小程序
               console.log("eee");
@@ -199,7 +197,7 @@ export default {
       });
     },
     async onSubmit() {
-      let result = await this.limitDistance()
+      let result = await this.limitDistance();
       if (result) {
         // 判断时间是否超出一个小时
         this.currentDate = dayjs(this.currentDate).format(
@@ -222,6 +220,8 @@ export default {
         } = this;
         let that = this;
         // 获取所有的参数
+        let orderidUUID = that.uuid(32, 16);
+        let nonceStrUUID = that.uuid(32, 16);
         const params = {
           openid,
           merchantId,
@@ -232,9 +232,8 @@ export default {
           total,
           mealTime,
           isScheduled,
+          orderidUUID
         };
-        let orderidUUID = that.uuid(32, 16);
-        let nonceStrUUID = that.uuid(32, 16);
         console.log("uuid", orderidUUID);
         let body = "贝克汉堡订单";
         let money = total * 100;
@@ -246,35 +245,28 @@ export default {
             orderid: orderidUUID,
             money,
             nonceStr: nonceStrUUID,
+            attach: params
           },
           success: async (res) => {
-          that.pay(res.result);
-          setTimeout(() => {
-          let queryResult = await that.queryOrder(orderidUUID, nonceStrUUID);
-          }, 300);
-            if (queryResult) {
-              order(params).then((res) => {
-                console.log(res);
-                that.loading = false;
-                if (res.code === 0) {
-                  uni.navigateTo({
-                    url: `/pages/orderResult/success?data=${encodeURIComponent(
-                      JSON.stringify(res.data)
-                    )}`,
-                  });
-                } else {
-                  uni.navigateTo({
-                    url: "/pages/orderResult/fail",
-                  });
-                }
-              });
-            } else {
-              that.$toast("支付失败");
-              uni.navigateTo({
-                url: "/pages/orderResult/fail",
-              });
-            }
-          },
+          await that.pay(res.result)
+          let queryResult = await that.queryOrder(orderidUUID, nonceStrUUID)
+          that.loading = false;
+          let orderInfoData = await orderInfo({orderidUUID})
+          let orderInfoDataJSON = orderInfoData.data[0]
+          console.log('orderInfo', orderInfoDataJSON)
+          if (queryResult) {
+            uni.navigateTo({
+                  url: `/pages/orderResult/success?data=${encodeURIComponent(
+                    JSON.stringify(orderInfoDataJSON)
+                  )}`,
+                });
+          } else {
+            that.$toast("支付失败");
+            uni.navigateTo({
+              url: "/pages/orderResult/fail",
+            });
+          }
+        },
           fail: (err) => {
             console.error("[云函数] [login] 调用失败", err);
           },
@@ -294,12 +286,10 @@ export default {
             console.log("pay success", res);
             //跳转到支付成功页面
             resolve(true);
-            that.loading = false
           },
           fail(res) {
             console.error("pay fail", res);
             //跳转到支付失败页面
-            that.loading = false
             resolve(false);
           },
         });
@@ -314,8 +304,8 @@ export default {
             nonceStr: str,
           },
           success: (res) => {
-            if (res.result.tradeState === 'SUCCESS') {
-            resolve(true);
+            if (res.result.tradeState === "SUCCESS") {
+              resolve(true);
             }
           },
           fail: (err) => {
@@ -324,7 +314,7 @@ export default {
           },
         });
       });
-    }
+    },
   },
 };
 </script>

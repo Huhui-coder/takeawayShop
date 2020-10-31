@@ -42,7 +42,8 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { order } from "../../../common/api";
+import { order, orderInfo } from "../../../common/api";
+
 import dayjs from "dayjs";
 
 export default {
@@ -110,6 +111,8 @@ export default {
       } = this;
       let that = this;
       // 获取所有的参数
+      let orderidUUID = that.uuid(32, 16);
+      let nonceStrUUID = that.uuid(32, 16);
       const params = {
         openid,
         merchantId,
@@ -119,10 +122,10 @@ export default {
         total,
         mealTime,
         isScheduled,
-        userAddressInfo
+        userAddressInfo,
+        orderidUUID
       };
-      let orderidUUID = that.uuid(32, 16);
-      let nonceStrUUID = that.uuid(32, 16);
+      
       let body = "贝克汉堡订单";
       let money = total * 100;
       // 调用云函数
@@ -133,27 +136,21 @@ export default {
           orderid: orderidUUID,
           money,
           nonceStr: nonceStrUUID,
+          attach: params
         },
         success: async (res) => {
-          that.pay(res.result);
-          setTimeout(() => {
-          let queryResult = await that.queryOrder(orderidUUID, nonceStrUUID);
-          }, 300);
+          await that.pay(res.result)
+          let queryResult = await that.queryOrder(orderidUUID, nonceStrUUID)
+          that.loading = false
+          let orderInfoData = await orderInfo({orderidUUID})
+          let orderInfoDataJSON = orderInfoData.data[0]
+          console.log('orderInfo', orderInfoDataJSON)
           if (queryResult) {
-            order(params).then((res) => {
-              that.loading = false;
-              if (res.code === 0) {
-                uni.navigateTo({
+            uni.navigateTo({
                   url: `/pages/orderResult/success?data=${encodeURIComponent(
-                    JSON.stringify(res.data)
+                    JSON.stringify(orderInfoDataJSON)
                   )}`,
                 });
-              } else {
-                uni.navigateTo({
-                  url: "/pages/orderResult/fail",
-                });
-              }
-            });
           } else {
             that.$toast("支付失败");
             uni.navigateTo({
@@ -174,11 +171,9 @@ export default {
         wx.requestPayment({
           ...payment, //。。。是展开变量的语法
           success(res) {
-            that.loading = false
             resolve(true);
           },
           fail(res) {
-            that.loading = false
             //跳转到支付失败页面
             resolve(false);
           },

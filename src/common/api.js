@@ -44,6 +44,14 @@ export const singleOrder = (data) => {
 		method: 'get'
 	})
 }
+// 查询订单完成后订单的信息
+export const orderInfo = (data) => {
+	return http.request({
+		url: '/user/getSingalOrder',
+		data,
+		method: 'get'
+	})
+}
 
 // 查询全部订单
 export const allOrder = (data) => {
